@@ -240,8 +240,15 @@ seven
 #8th: Relationship between the power to make choices and ladder score
 eight <- ggplot(asno, aes(x = Freedom.to.make.life.choices, y = Ladder.score)) + geom_point(color = "orange") + geom_smooth(method = "lm", color = "black")
 eight <- eight + labs(title = "Relationship between the power to make choices and ladder score", x = "Freedom to make life choices", y = "Ladder Score")
+eight <- eight + facet_grid(.~ Regional.indicator)
 eight
 
 #Is a strong relation between the freedom of speech and decision making with the happiness conceived
+#the graph have been splitted so it can be seen that this tendency mantains within almost all world areas
 
-#9th: 
+#9th: Relationship between life expectancy and social support
+nine <- ggplot(asno, aes(x = Healthy.life.expectancy, y = Social.support)) + geom_point(color = "green") + geom_smooth(method = "lm", color = "black")
+nine <- nine + labs(title = "Relationship between life expectancy and social support", x = "Healthy life expectancy", y = "Social support")
+nine
+
+#We can see than in countries where is more social support people tend to live more
