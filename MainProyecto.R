@@ -156,22 +156,21 @@ shrek[shrek == "Z���"]<- "Zurich"
 
 #### 6. Graphs ####
 
-
 # 1st: Tax revenue -- GDP
 
 # sum(is.na(shrek$Total.tax.rate)) = 0
 # sum(is.na(shrek$Tax.revenue....)) = 0
 
-data1 <- shrek[!shrek$GDP == "",]
-data1 <- data1[!data1$Tax.revenue.... == "",]
+data1 <- shrek[!shrek$GDP == "",] # Removing all blank spaces in GDP
+data1 <- data1[!data1$Tax.revenue.... == "",] # Removing all blank spaces in Tax.Revenue
 
 # now that we don't have any blank rows we will pass the information from string to it's respective type of data
 
-data1$GDP <- gsub("\\$", "", shrek$GDP) 
-data1$GDP <- gsub(",", "", data1$GDP)
-data1$Tax.revenue.... <- gsub("%", "", data1$Tax.revenue....)
-data1 <- data1 %>% mutate(GDP = as.numeric(GDP))
-data1 <- data1 %>% mutate(Tax.revenue.... = as.numeric(Tax.revenue....))
+data1$GDP <- gsub("\\$", "", data1$GDP) # Removing the '$' to convert it into numerical 
+data1$GDP <- gsub(",", "", data1$GDP) # Removing the ','
+data1$Tax.revenue.... <- gsub("%", "", data1$Tax.revenue....) # Removing the '%' to convert it into numerical where will be out of 100
+data1 <- data1 %>% mutate(GDP = as.numeric(GDP)) # Convert GDP row into numerical
+data1 <- data1 %>% mutate(Tax.revenue.... = as.numeric(Tax.revenue....)) # Converting Tax.revenue row into numerical
 
 first <- ggplot(data1, aes(x = Tax.revenue...., y = GDP)) + geom_col(color = "blue")
 first <- first + labs(title = "Relation between Tax revenue and GDP", x = "Tax revenue", y = "GDP")
@@ -183,10 +182,11 @@ first
 
 # sum(is.na(shrek$Out.of.pocket.health.expenditure)) = 0
 # sum(is.na(shrek$Infant.mortality)) = 0
-
+# Removing all the blank spaces of the variables we need
 data2 <- shrek[!shrek$Infant.mortality == "",] # To eliminate the rows were there is a blank space
 data2 <- data2[!data2$Out.of.pocket.health.expenditure == "",] # To eliminate the rows were there is a blank space
 
+# Converting needed rows into numeric ones
 data2$Out.of.pocket.health.expenditure <- gsub("%", "", data2$Out.of.pocket.health.expenditure)
 data2 <- data2 %>% mutate(Infant.mortality = as.numeric(Infant.mortality))
 data2 <- data2 %>% mutate(Out.of.pocket.health.expenditure = as.numeric(Out.of.pocket.health.expenditure))
@@ -198,9 +198,10 @@ second
 
 # We can see a relation between this two variable, the more high the out of pocket health expenditure is the more infant mortality
 
-# 3rd: Relation between Birth rate and 
 # 4th: Relation between CO2 emisions and Urban population
 
+# Removing all the blank spaces of the variables we need
+                     
 # sum(is.na(shrek$Co2.Emissions)) = 0
 # sum(is.na(shrek$Urban_population)) = 0
 data4 <- shrek[!shrek$Co2.Emissions == "",]
@@ -208,7 +209,7 @@ data4 <- data4[!data4$Urban_population == "",]
 
 data4$Co2.Emissions <- gsub(",","",data4$Co2.Emissions)
 data4$Urban_population <- gsub(",", "", data4$Urban_population)
-
+# Converting needed rows into numeric ones
 data4 <- data4 %>% mutate(Co2.Emissions = as.numeric(Co2.Emissions))
 data4 <- data4 %>% mutate(Urban_population = as.numeric(Urban_population))
 
@@ -219,27 +220,35 @@ fourth
 # The high CO2 emission is a clear consequence of a high urban population
 
 # 5th: Relation between Population density and Land area
-
+                     
+# Removing all the blank spaces of the variables we need
+                     
 # sum(is.na(shrek$Land.Area.Km2.)) == 0
 data5 <- shrek[!shrek$Land.Area.Km2. == "",]
 # sum(is.na(data5$Density..P.Km2.)) == 0
 data5 <- data5[!data5$Density..P.Km2. == "",]
-
+# Converting needed rows into numeric ones
 data5$Land.Area.Km2. <- gsub(",","",data5$Land.Area.Km2.)
 data5 <- data5 %>% mutate(Land.Area.Km2. = as.numeric(Land.Area.Km2.))
+data5$Density..P.Km2. <- gsub(",","", data5$Density..P.Km2.)
+data5 <- data5 %>% mutate(Density..P.Km2. = as.numeric(Density..P.Km2.))
 
-five <- ggplot(data5, aes(x = Land.Area.Km2., y = Density..P.Km2.)) + geom_col(color = "red")
+five <- ggplot(data5, aes(x = Land.Area.Km2., y = Density..P.Km2.)) + geom_area(color = "red")
 five <- five + labs(title = "Relation between Population density and Land", x = "Area", y = "Population density")
 five
 
 # When the Land Area is high, the Population density decreases a lot
 
 # 6th: Relation between Population: Labor fource participation and Unemployment rate
+
+# Removing all the blank spaces of the variables we need
+                     
 data6 <- shrek[!shrek$Population..Labor.force.participation.... == "",]
 data6 <- data6[!data6$Unemployment.rate == "",]
 
 data6$Population..Labor.force.participation.... <- gsub("%","",data6$Population..Labor.force.participation....)
 data6$Unemployment.rate <- gsub("%","", data6$Unemployment.rate)
+# Converting needed rows into numeric ones
 data6 <- data6 %>% mutate(Population..Labor.force.participation.... = as.numeric(Population..Labor.force.participation....))
 data6 <- data6 %>% mutate(Unemployment.rate = as.numeric(Unemployment.rate))
 
