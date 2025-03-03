@@ -161,7 +161,7 @@ data1 <- data1[!data1$Tax.revenue.... == "",] # Removing all blank spaces in Tax
 
 # now that we don't have any blank rows we will pass the information from string to it's respective type of data
 
-data1$GDP <- gsub("\\$", "", shrek$GDP) # Removing the '$' to convert it into numerical 
+data1$GDP <- gsub("\\$", "", data1$GDP) # Removing the '$' to convert it into numerical 
 data1$GDP <- gsub(",", "", data1$GDP) # Removing the ','
 data1$Tax.revenue.... <- gsub("%", "", data1$Tax.revenue....) # Removing the '%' to convert it into numerical where will be out of 100
 data1 <- data1 %>% mutate(GDP = as.numeric(GDP)) # Convert GDP row into numerical
