@@ -228,3 +228,20 @@ six <- six + labs(title = "Relation between Labor fource participation and Unemp
 six
 
 # They have a relation, a high labor fource participation lead to a small unemployment rate
+
+#7th: Relationship between perception of corruption and ladder score
+#In the happiness dataset aren't null values nor blanck spaces so it isn't necessary to eliminate rows
+seven <- ggplot(asno, aes(x = Perceptions.of.corruption, y = Ladder.score)) + geom_point(color = "blue") + geom_smooth(method = "lm", color = "black")
+seven <- seven + labs(title = "Relationship between perception of corruption and ladder score", x = "Perceptions of corruption", y = "Ladder Score")
+seven
+
+#With this graph we can coclude that the corruption conceived by population affects in their happiness
+
+#8th: Relationship between the power to make choices and ladder score
+eight <- ggplot(asno, aes(x = Freedom.to.make.life.choices, y = Ladder.score)) + geom_point(color = "orange") + geom_smooth(method = "lm", color = "black")
+eight <- eight + labs(title = "Relationship between the power to make choices and ladder score", x = "Freedom to make life choices", y = "Ladder Score")
+eight
+
+#Is a strong relation between the freedom of speech and decision making with the happiness conceived
+
+#9th: 
