@@ -138,10 +138,10 @@ print(cotains(�))
 
 # 1st: Tax revenue -- GDP
 
-# sum(is.na(shrek$Total.tax.rate)) = 0
-# sum(is.na(shrek$Tax.revenue....)) = 0
+# sum(is.na(data$Total.tax.rate)) = 0
+# sum(is.na(data$Tax.revenue....)) = 0
 
-data1 <- shrek[!shrek$GDP == "",]
+data1 <- data[!data$GDP == "",]
 data1 <- data1[!data1$Tax.revenue.... == "",]
 
 # now that we don't have any blank rows we will pass the information from string to it's respective type of data
@@ -156,13 +156,15 @@ first <- ggplot(data1, aes(x = Tax.revenue...., y = GDP)) + geom_col(color = "bl
 first <- first + labs(title = "Relation between Tax revenue and GDP", x = "Tax revenue", y = "GDP")
 first
 
+# We don't see a clear relationship between this variables but we can see that when the Tax Revenue is too high or too low the GDP decreases considerably
+
 # 2nd: Relation between Out of pocket Health expenditure and Infant mortality
 
-# sum(is.na(shrek$Out.of.pocket.health.expenditure)) = 0
-# sum(is.na(shrek$Infant.mortality)) = 0
+# sum(is.na(data$Out.of.pocket.health.expenditure)) = 0
+# sum(is.na(data$Infant.mortality)) = 0
 
-data2 <- shrek[!shrek$Infant.mortality == "",]
-data2 <- data2[!data2$Out.of.pocket.health.expenditure == "",]
+data2 <- data[!data$Infant.mortality == "",] # To eliminate the rows were there is a blank space
+data2 <- data2[!data2$Out.of.pocket.health.expenditure == "",] # To eliminate the rows were there is a blank space
 
 data2$Out.of.pocket.health.expenditure <- gsub("%", "", data2$Out.of.pocket.health.expenditure)
 data2 <- data2 %>% mutate(Infant.mortality = as.numeric(Infant.mortality))
@@ -173,12 +175,14 @@ second <- second + labs(title = "Relation between Out of pocket Health expenditu
 second <- second + geom_smooth(method = "lm") + geom_point(color = "green")
 second
 
+# We can see a relation between this two variable, the more high the out of pocket health expenditure is the more infant mortality
+
 # 3rd: Relation between Birth rate and 
 # 4th: Relation between CO2 emisions and Urban population
 
-# sum(is.na(shrek$Co2.Emissions)) = 0
-# sum(is.na(shrek$Urban_population)) = 0
-data4 <- shrek[!shrek$Co2.Emissions == "",]
+# sum(is.na(data$Co2.Emissions)) = 0
+# sum(is.na(data$Urban_population)) = 0
+data4 <- data[!data$Co2.Emissions == "",]
 data4 <- data4[!data4$Urban_population == "",]
 
 data4$Co2.Emissions <- gsub(",","",data4$Co2.Emissions)
@@ -187,30 +191,30 @@ data4$Urban_population <- gsub(",", "", data4$Urban_population)
 data4 <- data4 %>% mutate(Co2.Emissions = as.numeric(Co2.Emissions))
 data4 <- data4 %>% mutate(Urban_population = as.numeric(Urban_population))
 
-fourth <- ggplot(data4, aes(x = Co2.Emissions, y = Urban_population)) + geom_col(color = "orange")
+fourth <- ggplot(data4, aes(x = Co2.Emissions, y = Urban_population)) + geom_point(color = "orange")
 fourth <- fourth + labs(title = "Relation between CO2 emisions and Urban Population") + geom_smooth(method =  "gam")
 fourth
 
+# The high CO2 emission is a clear consequence of a high urban population
+
 # 5th: Relation between Population density and Land area
 
-# sum(is.na(shrek$Land.Area.Km2.)) == 0
-data5 <- shrek[!shrek$Land.Area.Km2. == "",]
-# sum(is.na(shrek$Density..P.Km2.)) == 0
+# sum(is.na(data$Land.Area.Km2.)) == 0
+data5 <- data[!data$Land.Area.Km2. == "",]
+# sum(is.na(data5$Density..P.Km2.)) == 0
 data5 <- data5[!data5$Density..P.Km2. == "",]
 
 data5$Land.Area.Km2. <- gsub(",","",data5$Land.Area.Km2.)
 data5 <- data5 %>% mutate(Land.Area.Km2. = as.numeric(Land.Area.Km2.))
-data5 <- data5 %>% mutate(Density..P.Km2. = as.numeric(Density..P.Km2.))
 
-five <- ggplot(data5, aes(x = Land.Area.Km2., y = Density..P.Km2.)) + geom_point(color = "red")
+five <- ggplot(data5, aes(x = Land.Area.Km2., y = Density..P.Km2.)) + geom_col(color = "red")
 five <- five + labs(title = "Relation between Population density and Land", x = "Area", y = "Population density")
 five
 
-# 6th: Relation between Population: Labor fource participation and Unemployment rate
+# When the Land Area is high, the Population density decreases a lot
 
-# sum(is.na(shrek$Population..Labor.force.participation....)) = 0
-# sum(is.na(shrek$Unemployment.rate)) = 0
-data6 <- shrek[!shrek$Population..Labor.force.participation.... == "",]
+# 6th: Relation between Population: Labor fource participation and Unemployment rate
+data6 <- data[!data$Population..Labor.force.participation.... == "",]
 data6 <- data6[!data6$Unemployment.rate == "",]
 
 data6$Population..Labor.force.participation.... <- gsub("%","",data6$Population..Labor.force.participation....)
@@ -219,6 +223,8 @@ data6 <- data6 %>% mutate(Population..Labor.force.participation.... = as.numeric
 data6 <- data6 %>% mutate(Unemployment.rate = as.numeric(Unemployment.rate))
 
 
-six <- ggplot(data6, aes(x = Population..Labor.force.participation...., y = Unemployment.rate)) + geom_col(color = "black") + geom_smooth(method = "gam")
+six <- ggplot(data6, aes(x = Population..Labor.force.participation...., y = Unemployment.rate)) + geom_point(color = "black") + geom_smooth(method = "lm", color = "red")
 six <- six + labs(title = "Relation between Labor fource participation and Unemployment Rate", x = "Labor fource participation", y = "Unemployment Rate")
 six
+
+# They have a relation, a high labor fource participation lead to a small unemployment rate
