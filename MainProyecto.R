@@ -138,15 +138,15 @@ print(cotains(�))
 
 # 1st: Tax revenue -- GDP
 
-# sum(is.na(data$Total.tax.rate)) = 0
-# sum(is.na(data$Tax.revenue....)) = 0
+# sum(is.na(shrek$Total.tax.rate)) = 0
+# sum(is.na(shrek$Tax.revenue....)) = 0
 
-data1 <- data[!data$GDP == "",]
+data1 <- shrek[!shrek$GDP == "",]
 data1 <- data1[!data1$Tax.revenue.... == "",]
 
 # now that we don't have any blank rows we will pass the information from string to it's respective type of data
 
-data1$GDP <- gsub("\\$", "", data1$GDP) 
+data1$GDP <- gsub("\\$", "", shrek$GDP) 
 data1$GDP <- gsub(",", "", data1$GDP)
 data1$Tax.revenue.... <- gsub("%", "", data1$Tax.revenue....)
 data1 <- data1 %>% mutate(GDP = as.numeric(GDP))
@@ -160,10 +160,10 @@ first
 
 # 2nd: Relation between Out of pocket Health expenditure and Infant mortality
 
-# sum(is.na(data$Out.of.pocket.health.expenditure)) = 0
-# sum(is.na(data$Infant.mortality)) = 0
+# sum(is.na(shrek$Out.of.pocket.health.expenditure)) = 0
+# sum(is.na(shrek$Infant.mortality)) = 0
 
-data2 <- data[!data$Infant.mortality == "",] # To eliminate the rows were there is a blank space
+data2 <- shrek[!shrek$Infant.mortality == "",] # To eliminate the rows were there is a blank space
 data2 <- data2[!data2$Out.of.pocket.health.expenditure == "",] # To eliminate the rows were there is a blank space
 
 data2$Out.of.pocket.health.expenditure <- gsub("%", "", data2$Out.of.pocket.health.expenditure)
@@ -180,9 +180,9 @@ second
 # 3rd: Relation between Birth rate and 
 # 4th: Relation between CO2 emisions and Urban population
 
-# sum(is.na(data$Co2.Emissions)) = 0
-# sum(is.na(data$Urban_population)) = 0
-data4 <- data[!data$Co2.Emissions == "",]
+# sum(is.na(shrek$Co2.Emissions)) = 0
+# sum(is.na(shrek$Urban_population)) = 0
+data4 <- shrek[!shrek$Co2.Emissions == "",]
 data4 <- data4[!data4$Urban_population == "",]
 
 data4$Co2.Emissions <- gsub(",","",data4$Co2.Emissions)
@@ -199,8 +199,8 @@ fourth
 
 # 5th: Relation between Population density and Land area
 
-# sum(is.na(data$Land.Area.Km2.)) == 0
-data5 <- data[!data$Land.Area.Km2. == "",]
+# sum(is.na(shrek$Land.Area.Km2.)) == 0
+data5 <- shrek[!shrek$Land.Area.Km2. == "",]
 # sum(is.na(data5$Density..P.Km2.)) == 0
 data5 <- data5[!data5$Density..P.Km2. == "",]
 
@@ -214,7 +214,7 @@ five
 # When the Land Area is high, the Population density decreases a lot
 
 # 6th: Relation between Population: Labor fource participation and Unemployment rate
-data6 <- data[!data$Population..Labor.force.participation.... == "",]
+data6 <- shrek[!shrek$Population..Labor.force.participation.... == "",]
 data6 <- data6[!data6$Unemployment.rate == "",]
 
 data6$Population..Labor.force.participation.... <- gsub("%","",data6$Population..Labor.force.participation....)
@@ -252,3 +252,55 @@ nine <- nine + labs(title = "Relationship between life expectancy and social sup
 nine
 
 #We can see than in countries where is more social support people tend to live more
+
+# Variables summaries
+
+# Population Density
+shrek <- shrek[!is.na(shrek$Density..P.Km2.),]
+shrek <- shrek %>% mutate(Density..P.Km2. = as.numeric(Density..P.Km2.)) 
+
+mean(shrek$Density..P.Km2.)
+median(shrek$Density..P.Km2.)
+sd(shrek$Density..P.Km2.)
+min(shrek$Density..P.Km2.) 
+max(shrek$Density..P.Km2.)
+
+# Gasoline prices
+
+shrek$Gasoline.Price <- gsub("\\$","", shrek$Gasoline.Price)
+shrek <- shrek[!is.na(shrek$Gasoline.Price),]
+shrek <- shrek[!shrek$Gasoline.Price == "",]
+shrek <- shrek %>% mutate(Gasoline.Price = as.numeric(Gasoline.Price))
+
+mean(shrek$Gasoline.Price)
+median(shrek$Gasoline.Price)
+sd(shrek$Gasoline.Price)
+min(shrek$Gasoline.Price)
+max(shrek$Gasoline.Price)
+
+# Life expectancy
+
+shrek <- shrek[!is.na(shrek$Life.expectancy),]
+shrek <- shrek[!shrek$Life.expectancy = "",]
+shrek <- shrek %>% mutate(Life.expectancy = as.numeric(Life.expectancy))
+
+mean(shrek$Life.expectancy)
+median(shrek$Life.expectancy)
+sd(shrek$Life.expectancy)
+min(shrek$Life.expectancy)
+max(shrek$Life.expectancy)
+
+# Generosity
+
+mean(asno$Generosity)
+median(asno$Generosity)
+sd(asno$Generosity)
+min(asno$Generosity)
+max(asno$Generosity)
+
+# Perceptions of corruption	
+mean(asno$Perceptions.of.corruption)
+median(asno$Perceptions.of.corruption)
+sd(asno$Perceptions.of.corruption)
+min(asno$Perceptions.of.corruption)
+max(asno$Perceptions.of.corruption)
