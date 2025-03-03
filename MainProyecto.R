@@ -314,7 +314,7 @@ max(shrek$Gasoline.Price)
 # Life expectancy
 
 shrek <- shrek[!is.na(shrek$Life.expectancy),]
-shrek <- shrek[!shrek$Life.expectancy = "",]
+shrek <- shrek[!shrek$Life.expectancy == "",]
 shrek <- shrek %>% mutate(Life.expectancy = as.numeric(Life.expectancy))
 
 mean(shrek$Life.expectancy)
