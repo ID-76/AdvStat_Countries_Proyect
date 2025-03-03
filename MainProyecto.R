@@ -1,40 +1,58 @@
 #Proyecto AdvStat
 library(tidyverse)
 library(ggplot2)
+library(rstudioapi)
+
+setwd(dirname(getActiveDocumentContext()$path))
 
 shrek <- read.csv("worlddata2023.csv", fileEncoding = "UTF-8")
+asno <- read.csv("2021.csv", fileEncoding = "UTF-8")
 print(shrek)
-
+print(asno)
 
 
 # a. Are the data observational or experimental?
-# The data is  observational, 
+# The data in the countries dataset is observational, 
 # reflecting economic and social indicators collected without experimental intervention.
 
-
+# On the other hand
 
 # b. How many observations and variables do you have?
-dim(shrek) #195 indicates the number of rows
-           #35 indicates the number of columns
+dim(shrek) #195 rows, this is the number of countries
+           #35 columns, this is the number of parameters for each country
+dim(asno) #149 rows, this is the number of countries
+          #20 columns, this is the number of parameters for each country
 
 
-
-# c. Are there missing values?
-# Yes, specially in Armed forces size, gasoline price, minimum wage, 
+##### c. Are there missing values? #####
+# Yes, but only for the countries dataset. There are specially present in: 
+# Armed forces size, gasoline price, minimum wage, 
 # labor force participation, tax revenue or unemployment rate.
-cat("\nNANs:\n")
 count_NA <- function(dataframe) {
-  sapply(dataframe, function(x) sum(is.na(x) | x == ""))  
+  na_count <- sapply(dataframe, function(x) sum(is.na(x) | x == ""))  
+  na_percentage <- round((na_count / nrow(dataframe)) * 100, 2) 
+  
+  result <- data.frame(
+    Column = names(na_count),
+    NA_Count = na_count,
+    NA_Percentage = na_percentage
+  )
+  
+  cat("\nNANs:\n")
+  return(result)
 }
+
 count_NA(shrek)
+count_NA(asno)
 
 
 
-# d. How are the data coded? Indicate the type of each variable (continuous, discrete,
-# categorical, binary, etc.)
+
+##### d. How are the data coded? Indicate the type of each variable #####
 str(shrek)
-
-## Continuous Variables (Numerical)
+str(asno)
+####  COUNTRIES DATASET ####
+## Continuous Variables (Numerical) ##
 # Birth.Rate: Birth rate.
 # Fertility.Rate: Fertility rate.
 # Infant.mortality: Infant mortality per 1.000 births.
@@ -74,17 +92,46 @@ str(shrek)
 # Unemployment.rate: Unemployment rate.
 # Urban_population: Urban population.
 # Population: Total population (represented as text).
+#### HAPPINESS INDEX DATASET ####
+
+# Categorical Variables (Nominal)
+# Country name : We show the names of the countries.
+# Regional indicator : Shows which region the country is in.
+
+# Continuous Variables
+# Ladder score : Ladder score of countries.
+# Standard error of ladder score : Showing the error rate in the ladder score.
+# upperwhisker : Upper limit of score.
+# lowerwhisker : Lower limit of score.
+# Logged GDP per capita : Total monetary or market value of all the finished goods 
+# and services produced within a country's borders in a specific time period.
+# Social support : Social support scores of countries.
+# Healthy life expectancy : Healthy life expectancy of countries.
+# Freedom to make life choices : The freedom of people in that country to choose life.
+# Generosity : Generosity rate of the country.
+# Perceptions of corruption : Corruption perceptions in the country.
+# Ladder score in Dystopia : Ladder score in Dystopia of the country 
+# (Dystopia: alternatively cacotopia or simply anti-utopia, is a community 
+# or society that is undesirable or frightening).
+# Explained by: Log GDP per capita : Explained Log GDP per capita ratio.
+# Explained by: Social support : Explained social support rate.
+# Explained by: Healthy life expectancy : Explained healthy life expectancy.
+# Explained by: Freedom to make life choices : Explained freedom to make life choices.
+# Explained by: Generosity : Explained generosity.
+# Explained by: Perceptions of corruption : Explained perceptions of corruption.
+# Dystopia + residual : Dystopia + residual total rate.
 
 
 
-# e. What are the units of measurement?
+
+##### e. What are the units of measurement? #####
 # It depends on the measurement but the most common ones are: Km2 for area related data, 
 # number of metric tons for CO2 emissions, US dollars for economy or price related data,
 # number of deaths per 1.000 or 100.000 births for the different mortality ratios.
 
+#####
 
 
-
-
+print(cotains(�))
 #colnames(shrek)[2] = "Density (P/Km2)" # Column name was wrapped
 #shrek[shrek == "S�����������"]<- "Sao Tome and Principe"
