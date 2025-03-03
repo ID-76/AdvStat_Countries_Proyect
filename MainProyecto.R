@@ -12,10 +12,10 @@ print(asno)
 
 
 # a. Are the data observational or experimental?
-# The data in the countries dataset is observational, 
+# The data in the countries dataset is observational,
 # reflecting economic and social indicators collected without experimental intervention.
+# However the Happiness dataset is experimental because the data was collected through polls.
 
-# On the other hand
 
 # b. How many observations and variables do you have?
 dim(shrek) #195 rows, this is the number of countries
@@ -25,19 +25,19 @@ dim(asno) #149 rows, this is the number of countries
 
 
 ##### c. Are there missing values? #####
-# Yes, but only for the countries dataset. There are specially present in: 
-# Armed forces size, gasoline price, minimum wage, 
+# Yes, but only for the countries dataset. There are specially present in:
+# Armed forces size, gasoline price, minimum wage,
 # labor force participation, tax revenue or unemployment rate.
 count_NA <- function(dataframe) {
-  na_count <- sapply(dataframe, function(x) sum(is.na(x) | x == ""))  
-  na_percentage <- round((na_count / nrow(dataframe)) * 100, 2) 
-  
+  na_count <- sapply(dataframe, function(x) sum(is.na(x) | x == ""))
+  na_percentage <- round((na_count / nrow(dataframe)) * 100, 2)
+
   result <- data.frame(
     Column = names(na_count),
     NA_Count = na_count,
     NA_Percentage = na_percentage
   )
-  
+
   cat("\nNANs:\n")
   return(result)
 }
@@ -51,47 +51,51 @@ count_NA(asno)
 ##### d. How are the data coded? Indicate the type of each variable #####
 str(shrek)
 str(asno)
-####  COUNTRIES DATASET ####
-## Continuous Variables (Numerical) ##
-# Birth.Rate: Birth rate.
-# Fertility.Rate: Fertility rate.
-# Infant.mortality: Infant mortality per 1.000 births.
-# Life.expectancy: Life expectancy.
-# Physicians.per.thousand: Physicians per thousand people.
-# Latitude: Latitude.
-# Longitude: Longitude.
+
+#### COUNTRIES DATASET ####
+
+## Continuous Variables (Numerical)
+# Birth Rate: The number of births per 1,000 people in a year.
+# Fertility Rate: The average number of children born per woman over her lifetime.
+# Infant Mortality: The number of infant deaths per 1,000 live births.
+# Life Expectancy: The average number of years a newborn is expected to live under current mortality conditions.
+# Physicians per Thousand: The number of medical doctors per 1,000 people in a country.
+# Latitude: The geographical latitude of a country, measured in degrees.
+# Longitude: The geographical longitude of a country, measured in degrees.
 
 ## Discrete Variables (Numerical)
-# Maternal.mortality.ratio: Maternal mortality ratio per 100.000 births.
+# Maternal Mortality Ratio: The number of maternal deaths per 100,000 live births.
 
 ## Categorical Variables (Nominal)
-# Country: Country.
-# Abbreviation: Country abbreviation.
-# Capital.Major.City: Capital or major city.
-# Currency.Code: Currency code.
-# Largest.city: Largest city.
-# Official.language: Official language.
+# Country: The name of the country.
+# Abbreviation: The abbreviated name of the country.
+# Capital or Major City: The capital or the largest city of the country.
+# Currency Code: The official currency code used in the country (e.g., USD, EUR).
+# Largest City: The most populous city in the country.
+# Official Language: The official language(s) spoken in the country.
 
 ## Categorical Variables (Ordinal)
-# Density..P.Km2.: Population density per square km (although represented as text, it could be an ordinal category).
-# Agricultural.Land....: Percentage of agricultural land.
-# Land.Area.Km2.: Land area in square km.
-# Armed.Forces.size: Size of the armed forces.
-# Co2.Emissions: CO2 emissions.
-# CPI: Consumer Price Index (CPI).
-# CPI.Change....: CPI change.
-# Forested.Area....: Percentage of forested area.
-# Gasoline.Price: Gasoline price.
-# GDP: Gross Domestic Product.
-# Gross.primary.education.enrollment....: Primary education enrollment.
-# Gross.tertiary.education.enrollment....: Tertiary education enrollment.
-# Out.of.pocket.health.expenditure: Percentage of out-of-pocket health expenditure.
-# Population..Labor.force.participation....: Labor force participation.
-# Tax.revenue....: Tax revenue percentage.
-# Total.tax.rate: Total tax rate.
-# Unemployment.rate: Unemployment rate.
-# Urban_population: Urban population.
-# Population: Total population (represented as text).
+# Population Density per Km²: The number of people per square kilometer. Although represented as text,
+# it could be categorized into levels (low, medium, high).
+# Agricultural Land Percentage: The proportion of land used for agriculture.
+# Land Area (Km²): The total land area of the country, measured in square kilometers.
+# Armed Forces Size: The number of active military personnel in a country.
+# CO₂ Emissions: The total amount of carbon dioxide emitted by a country.
+# Consumer Price Index (CPI): A measure that examines the average change in prices of goods and services over time.
+# CPI Change: The percentage change in the Consumer Price Index over a specific period.
+# Forested Area Percentage: The proportion of land covered by forests.
+# Gasoline Price: The cost of one liter of gasoline in US dollars.
+# Gross Domestic Product (GDP): The total economic output of a country, measured in US dollars.
+# Primary Education Enrollment: The percentage of eligible children enrolled in primary education.
+# Tertiary Education Enrollment: The percentage of eligible individuals enrolled in higher education institutions.
+# Out-of-Pocket Health Expenditure: The percentage of total health expenses paid directly by individuals.
+# Labor Force Participation: The percentage of the working-age population that is either employed or actively looking for work.
+# Tax Revenue Percentage: The proportion of a country's GDP collected as taxes.
+# Total Tax Rate: The percentage of income or corporate profit paid in taxes.
+# Unemployment Rate: The percentage of the labor force that is unemployed and actively seeking work.
+# Urban Population: The percentage of the population living in urban areas.
+# Total Population: The total number of people living in a country. Although represented as text,
+# it could be categorized into population size ranges.
 #### HAPPINESS INDEX DATASET ####
 
 # Categorical Variables (Nominal)
@@ -103,15 +107,15 @@ str(asno)
 # Standard error of ladder score : Showing the error rate in the ladder score.
 # upperwhisker : Upper limit of score.
 # lowerwhisker : Lower limit of score.
-# Logged GDP per capita : Total monetary or market value of all the finished goods 
+# Logged GDP per capita : Total monetary or market value of all the finished goods
 # and services produced within a country's borders in a specific time period.
 # Social support : Social support scores of countries.
 # Healthy life expectancy : Healthy life expectancy of countries.
 # Freedom to make life choices : The freedom of people in that country to choose life.
 # Generosity : Generosity rate of the country.
 # Perceptions of corruption : Corruption perceptions in the country.
-# Ladder score in Dystopia : Ladder score in Dystopia of the country 
-# (Dystopia: alternatively cacotopia or simply anti-utopia, is a community 
+# Ladder score in Dystopia : Ladder score in Dystopia of the country
+# (Dystopia: alternatively cacotopia or simply anti-utopia, is a community
 # or society that is undesirable or frightening).
 # Explained by: Log GDP per capita : Explained Log GDP per capita ratio.
 # Explained by: Social support : Explained social support rate.
@@ -125,13 +129,14 @@ str(asno)
 
 
 ##### e. What are the units of measurement? #####
-# It depends on the measurement but the most common ones are: Km2 for area related data, 
+# It depends on the measurement but the most common ones are: Km2 for area related data,
 # number of metric tons for CO2 emissions, US dollars for economy or price related data,
 # number of deaths per 1.000 or 100.000 births for the different mortality ratios.
 
 ##### Data Preparation #####
 
 colnames(shrek)[2] = "Density (P/Km2)" # Column name was wrapped
+# Add missing Country/City names (probably a encoding error by the author) 
 shrek[shrek == "S�����������"]<- "Sao Tome and Principe"
 shrek[shrek == "Bras���"]<- "Brasilia"
 shrek[shrek == "Bogot�"]<- "Bogota"
@@ -251,7 +256,7 @@ seven <- ggplot(asno, aes(x = Perceptions.of.corruption, y = Ladder.score)) + ge
 seven <- seven + labs(title = "Relationship between perception of corruption and ladder score", x = "Perceptions of corruption", y = "Ladder Score")
 seven
 
-#With this graph we can coclude that the corruption conceived by population affects in their happiness
+#With this graph we can conclude that the corruption conceived by population affects in their happiness
 
 #8th: Relationship between the power to make choices and ladder score
 eight <- ggplot(asno, aes(x = Freedom.to.make.life.choices, y = Ladder.score)) + geom_point(color = "orange") + geom_smooth(method = "lm", color = "black")
@@ -275,11 +280,11 @@ nine
 shrek <- shrek[!is.na(shrek$Density..P.Km2.),]
 shrek <- shrek %>% mutate(Density..P.Km2. = as.numeric(Density..P.Km2.)) 
 
-mean(shrek$Density..P.Km2.) # We obtain the mean of the Density variable
-median(shrek$Density..P.Km2.) # We obtain the median of the Density variable
-sd(shrek$Density..P.Km2.) # We obtain the standard deviation of the Density variable
-min(shrek$Density..P.Km2.) # We obtain the minimum value of Density
-max(shrek$Density..P.Km2.) # We obtain the maximum value of Density
+mean(shrek$Density..P.Km2.)
+median(shrek$Density..P.Km2.)
+sd(shrek$Density..P.Km2.)
+min(shrek$Density..P.Km2.) 
+max(shrek$Density..P.Km2.)
 
 # Gasoline prices
 
@@ -288,11 +293,11 @@ shrek <- shrek[!is.na(shrek$Gasoline.Price),]
 shrek <- shrek[!shrek$Gasoline.Price == "",]
 shrek <- shrek %>% mutate(Gasoline.Price = as.numeric(Gasoline.Price))
 
-mean(shrek$Gasoline.Price) # We obtain the mean of the Gasoline Prices
-median(shrek$Gasoline.Price) # We obtain the median of the Gasoline Prices
-sd(shrek$Gasoline.Price) # We obtain the standard deviation of the Gasoline Prices
-min(shrek$Gasoline.Price) # We obtain the minimum value of Gasoline Prices
-max(shrek$Gasoline.Price) # We obtain the maximum value of Gasoline Prices
+mean(shrek$Gasoline.Price)
+median(shrek$Gasoline.Price)
+sd(shrek$Gasoline.Price)
+min(shrek$Gasoline.Price)
+max(shrek$Gasoline.Price)
 
 # Life expectancy
 
@@ -300,23 +305,24 @@ shrek <- shrek[!is.na(shrek$Life.expectancy),]
 shrek <- shrek[!shrek$Life.expectancy = "",]
 shrek <- shrek %>% mutate(Life.expectancy = as.numeric(Life.expectancy))
 
-mean(shrek$Life.expectancy) # We obtain the mean of the Life expectancy
-median(shrek$Life.expectancy) # We obtain the median of the Life expectancy
-sd(shrek$Life.expectancy) # We obtain the standard deviation of the Life expectancy
-min(shrek$Life.expectancy) # We obtain the minimum value of Life expectancy
-max(shrek$Life.expectancy) # We obtain the maximum value of Life expectancy
+mean(shrek$Life.expectancy)
+median(shrek$Life.expectancy)
+sd(shrek$Life.expectancy)
+min(shrek$Life.expectancy)
+max(shrek$Life.expectancy)
 
 # Generosity
 
-mean(asno$Generosity) # We obtain the mean of the Generosity variable
-median(asno$Generosity) # We obtain the median of the Generosity variable
-sd(asno$Generosity) # We obtain the standard deviation of the Generosity variable
-min(asno$Generosity) # We obtain the minimum value of Generosity
-max(asno$Generosity) # We obtain the maximum value of Generosity
+mean(asno$Generosity)
+median(asno$Generosity)
+sd(asno$Generosity)
+min(asno$Generosity)
+max(asno$Generosity)
 
 # Perceptions of corruption	
-mean(asno$Perceptions.of.corruption) # We obtain the mean of the Corruption variable
-median(asno$Perceptions.of.corruption) # We obtain the median of the Corruption variable
-sd(asno$Perceptions.of.corruption) # We obtain the standard deviation of the Corruption variable
-min(asno$Perceptions.of.corruption) # We obtain the minimum value of Corruption
-max(asno$Perceptions.of.corruption) # We obtain the maximum value of Corruption
+mean(asno$Perceptions.of.corruption)
+median(asno$Perceptions.of.corruption)
+sd(asno$Perceptions.of.corruption)
+min(asno$Perceptions.of.corruption)
+max(asno$Perceptions.of.corruption)
+
