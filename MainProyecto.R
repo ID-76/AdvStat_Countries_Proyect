@@ -226,6 +226,7 @@ fourth
                      
 # sum(is.na(shrek$Land.Area.Km2.)) == 0
 data5 <- shrek[!shrek$Land.Area.Km2. == "",]
+<<<<<<< HEAD
 # sum(is.na(data5$Density..P.Km2.)) == 0
 data5 <- data5[!data5$Density..P.Km2. == "",]
 # Converting needed rows into numeric ones
@@ -235,6 +236,17 @@ data5$Density..P.Km2. <- gsub(",","", data5$Density..P.Km2.)
 data5 <- data5 %>% mutate(Density..P.Km2. = as.numeric(Density..P.Km2.))
 
 five <- ggplot(data5, aes(x = Land.Area.Km2., y = Density..P.Km2.)) + geom_area(color = "red")
+=======
+# sum(is.na(data5$`Density (P/Km2)`)) == 0
+data5 <- data5[!data5$`Density (P/Km2)` == "",]
+# Converting needed rows into numeric ones
+data5$Land.Area.Km2. <- gsub(",","",data5$Land.Area.Km2.)
+data5 <- data5 %>% mutate(Land.Area.Km2. = as.numeric(Land.Area.Km2.))
+data5$`Density (P/Km2)` <- gsub(",","", data5$`Density (P/Km2)`)
+data5 <- data5 %>% mutate(`Density (P/Km2)` = as.numeric(`Density (P/Km2)`))
+
+five <- ggplot(data5, aes(x = Land.Area.Km2., y = `Density (P/Km2)`)) + geom_area(color = "red")
+>>>>>>> origin/main
 five <- five + labs(title = "Relation between Population density and Land", x = "Area", y = "Population density")
 five
 
@@ -287,6 +299,7 @@ nine
 # Variables summaries
 
 # Population Density
+<<<<<<< HEAD
 shrek <- shrek[!is.na(shrek$Density..P.Km2.),]
 shrek$Density..P.Km2. <- gsub(",", "", shrek$Density..P.Km2.)
 shrek <- shrek %>% mutate(Density..P.Km2. = as.numeric(Density..P.Km2.)) 
@@ -294,6 +307,17 @@ shrek <- shrek %>% mutate(Density..P.Km2. = as.numeric(Density..P.Km2.))
 mean(shrek$Density..P.Km2.)
 median(shrek$Density..P.Km2.)
 sd(shrek$Density..P.Km2.)
+=======
+shrek <- shrek[!is.na(shrek$`Density (P/Km2)`),]
+shrek$`Density (P/Km2)` <- gsub(",", "", shrek$`Density (P/Km2)`)
+shrek <- shrek %>% mutate(`Density (P/Km2)` = as.numeric(`Density (P/Km2)`)) 
+
+mean(shrek$`Density (P/Km2)`)
+median(shrek$`Density (P/Km2)`)
+sd(shrek$`Density (P/Km2)`)
+min(shrek$`Density (P/Km2)`) 
+max(shrek$`Density (P/Km2)`)
+>>>>>>> origin/main
 
 
 # Gasoline prices
@@ -311,7 +335,11 @@ sd(shrek$Gasoline.Price)
 # Life expectancy
 
 shrek <- shrek[!is.na(shrek$Life.expectancy),]
+<<<<<<< HEAD
 # shrek <- shrek[!shrek$Life.expectancy = "",]
+=======
+shrek <- shrek[!shrek$Life.expectancy == "",]
+>>>>>>> origin/main
 shrek <- shrek %>% mutate(Life.expectancy = as.numeric(Life.expectancy))
 
 mean(shrek$Life.expectancy)
