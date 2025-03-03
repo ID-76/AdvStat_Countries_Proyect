@@ -275,11 +275,11 @@ nine
 shrek <- shrek[!is.na(shrek$Density..P.Km2.),]
 shrek <- shrek %>% mutate(Density..P.Km2. = as.numeric(Density..P.Km2.)) 
 
-mean(shrek$Density..P.Km2.)
-median(shrek$Density..P.Km2.)
-sd(shrek$Density..P.Km2.)
-min(shrek$Density..P.Km2.) 
-max(shrek$Density..P.Km2.)
+mean(shrek$Density..P.Km2.) # We obtain the mean of the Density variable
+median(shrek$Density..P.Km2.) # We obtain the median of the Density variable
+sd(shrek$Density..P.Km2.) # We obtain the standard deviation of the Density variable
+min(shrek$Density..P.Km2.) # We obtain the minimum value of Density
+max(shrek$Density..P.Km2.) # We obtain the maximum value of Density
 
 # Gasoline prices
 
@@ -288,11 +288,11 @@ shrek <- shrek[!is.na(shrek$Gasoline.Price),]
 shrek <- shrek[!shrek$Gasoline.Price == "",]
 shrek <- shrek %>% mutate(Gasoline.Price = as.numeric(Gasoline.Price))
 
-mean(shrek$Gasoline.Price)
-median(shrek$Gasoline.Price)
-sd(shrek$Gasoline.Price)
-min(shrek$Gasoline.Price)
-max(shrek$Gasoline.Price)
+mean(shrek$Gasoline.Price) # We obtain the mean of the Gasoline Prices
+median(shrek$Gasoline.Price) # We obtain the median of the Gasoline Prices
+sd(shrek$Gasoline.Price) # We obtain the standard deviation of the Gasoline Prices
+min(shrek$Gasoline.Price) # We obtain the minimum value of Gasoline Prices
+max(shrek$Gasoline.Price) # We obtain the maximum value of Gasoline Prices
 
 # Life expectancy
 
@@ -300,23 +300,23 @@ shrek <- shrek[!is.na(shrek$Life.expectancy),]
 shrek <- shrek[!shrek$Life.expectancy = "",]
 shrek <- shrek %>% mutate(Life.expectancy = as.numeric(Life.expectancy))
 
-mean(shrek$Life.expectancy)
-median(shrek$Life.expectancy)
-sd(shrek$Life.expectancy)
-min(shrek$Life.expectancy)
-max(shrek$Life.expectancy)
+mean(shrek$Life.expectancy) # We obtain the mean of the Life expectancy
+median(shrek$Life.expectancy) # We obtain the median of the Life expectancy
+sd(shrek$Life.expectancy) # We obtain the standard deviation of the Life expectancy
+min(shrek$Life.expectancy) # We obtain the minimum value of Life expectancy
+max(shrek$Life.expectancy) # We obtain the maximum value of Life expectancy
 
 # Generosity
 
-mean(asno$Generosity)
-median(asno$Generosity)
-sd(asno$Generosity)
-min(asno$Generosity)
-max(asno$Generosity)
+mean(asno$Generosity) # We obtain the mean of the Generosity variable
+median(asno$Generosity) # We obtain the median of the Generosity variable
+sd(asno$Generosity) # We obtain the standard deviation of the Generosity variable
+min(asno$Generosity) # We obtain the minimum value of Generosity
+max(asno$Generosity) # We obtain the maximum value of Generosity
 
 # Perceptions of corruption	
-mean(asno$Perceptions.of.corruption)
-median(asno$Perceptions.of.corruption)
-sd(asno$Perceptions.of.corruption)
-min(asno$Perceptions.of.corruption)
-max(asno$Perceptions.of.corruption)
+mean(asno$Perceptions.of.corruption) # We obtain the mean of the Corruption variable
+median(asno$Perceptions.of.corruption) # We obtain the median of the Corruption variable
+sd(asno$Perceptions.of.corruption) # We obtain the standard deviation of the Corruption variable
+min(asno$Perceptions.of.corruption) # We obtain the minimum value of Corruption
+max(asno$Perceptions.of.corruption) # We obtain the maximum value of Corruption
