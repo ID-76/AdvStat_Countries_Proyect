@@ -282,6 +282,7 @@ nine
 
 # Population Density
 shrek <- shrek[!is.na(shrek$Density..P.Km2.),]
+shrek$Density..P.Km2. <- gsub(",", "", shrek$Density..P.Km2.)
 shrek <- shrek %>% mutate(Density..P.Km2. = as.numeric(Density..P.Km2.)) 
 
 mean(shrek$Density..P.Km2.) # We obtain the mean of the Density variable
