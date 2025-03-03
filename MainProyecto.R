@@ -1,4 +1,5 @@
 #Proyecto AdvStat
+# Tip: Use the down arrow (v) besides the line number to collapse sections for a better experience
 library(tidyverse)
 library(ggplot2)
 library(rstudioapi)
@@ -11,13 +12,13 @@ print(shrek)
 print(asno)
 
 
-# a. Are the data observational or experimental?
+#### a. Are the data observational or experimental? ####
 # The data in the countries dataset is observational,
 # reflecting economic and social indicators collected without experimental intervention.
 # However the Happiness dataset is experimental because the data was collected through polls.
 
 
-# b. How many observations and variables do you have?
+#### b. How many observations and variables do you have? ####
 dim(shrek) #195 rows, this is the number of countries
            #35 columns, this is the number of parameters for each country
 dim(asno) #149 rows, this is the number of countries
