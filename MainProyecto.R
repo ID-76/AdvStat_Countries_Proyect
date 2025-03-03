@@ -129,12 +129,28 @@ str(asno)
 # number of metric tons for CO2 emissions, US dollars for economy or price related data,
 # number of deaths per 1.000 or 100.000 births for the different mortality ratios.
 
-#####
+##### Data Preparation #####
+
+colnames(shrek)[2] = "Density (P/Km2)" # Column name was wrapped
+shrek[shrek == "S�����������"]<- "Sao Tome and Principe"
+shrek[shrek == "Bras���"]<- "Brasilia"
+shrek[shrek == "Bogot�"]<- "Bogota"
+shrek[shrek == "San Jos������"]<- "San Jose"
+shrek[shrek == "Reykjav��"]<- "Reykjavik"
+shrek[shrek == "Mal�"]<- "Male"
+shrek[shrek == "Chi����"]<- "Chisinau"
+shrek[shrek == "Asun��"]<- "Asuncion"
+shrek[shrek == "S����"]<- "Sao Tome"
+shrek[shrek == "Lom�"]<- "Lome"
+shrek[shrek == "Nuku����"]<- "Nukualofa"
+shrek[shrek == "S����"]<- "Sao Paulo"
+shrek[shrek == "Statos�������"]<- "Nicosia"
+shrek[shrek == "S�����"]<- "Stockholm"
+shrek[shrek == "Z���"]<- "Zurich"
 
 
-print(cotains(�))
-#colnames(shrek)[2] = "Density (P/Km2)" # Column name was wrapped
-#shrek[shrek == "S�����������"]<- "Sao Tome and Principe"
+#### 6. Graphs ####
+
 
 # 1st: Tax revenue -- GDP
 
