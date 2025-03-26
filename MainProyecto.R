@@ -368,10 +368,18 @@ summary(model1Life)
 model2Life <- lm(Life.expectancy ~ Density..P.Km2. + Infant.mortality +
                Maternal.mortality.ratio + Minimum.wage +
                Longitude, data = shrek, na.action = na.omit)
+summary(model2Life)
+
 model3Life<- lm(Life.expectancy ~ Density..P.Km2. + Infant.mortality +
                   Maternal.mortality.ratio + Minimum.wage, data = shrek, na.action = na.omit)
-model4Life<- lm(Life.expectancy ~ Infant.mortality + Maternal.mortality.ratio + Minimum.wage, data = shrek, na.action = na.omit)
-anova(model4Life, model2Life)
+summary(model3Life)
+
 anova(model3Life, model2Life)
 
+cor(shrek$Infant.mortality, shrek$Maternal.mortality.ratio, use = "complete.obs")
+#infant mortality and maternal mortality are highly correlated so I will remove the one with the highest p-value
 
+model4Life<-lm(Life.expectancy ~ Density..P.Km2. + Infant.mortality + Minimum.wage +
+                 Longitude, data = shrek, na.action = na.omit)
+summary(model4Life)
+confint(model4Life)
