@@ -330,3 +330,13 @@ nine
 # sd(asno$Perceptions.of.corruption)
 # min(asno$Perceptions.of.corruption)
 # max(asno$Perceptions.of.corruption)
+
+model1 <- lm(Density..P.Km2. ~ Agricultural.Land.... + Land.Area.Km2. + Armed.Forces.size + Birth.Rate +
+               Calling.Code + Co2.Emissions + CPI + CPI.Change.... + Currency.Code + Fertility.Rate +
+               Forested.Area.... + Gasoline.Price + GDP + Gross.primary.education.enrollment.... +
+               Gross.tertiary.education.enrollment.... + Infant.mortality + Life.expectancy +
+               Maternal.mortality.ratio + Minimum.wage + Out.of.pocket.health.expenditure +
+               Physicians.per.thousand + Population + Population..Labor.force.participation.... +
+               Tax.revenue.... + Total.tax.rate + Unemployment.rate + Urban_population + Latitude +
+               Longitude, data = shrek)
+summary(model1)
