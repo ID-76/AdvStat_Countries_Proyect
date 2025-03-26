@@ -354,7 +354,7 @@ glimpse(shrek)
 head(shrek)
 
 #Linear model predicting Life expectancy
-model1 <- lm(Life.expectancy ~ Density..P.Km2. + Agricultural.Land.... + Land.Area.Km2. + Armed.Forces.size + Birth.Rate +
+model1Life <- lm(Life.expectancy ~ Density..P.Km2. + Agricultural.Land.... + Land.Area.Km2. + Armed.Forces.size + Birth.Rate +
                Calling.Code + Co2.Emissions + CPI + CPI.Change.... + Fertility.Rate +
                Forested.Area.... + Gasoline.Price + GDP + Gross.primary.education.enrollment.... +
                Gross.tertiary.education.enrollment.... + Infant.mortality + Birth.Rate +
@@ -363,4 +363,15 @@ model1 <- lm(Life.expectancy ~ Density..P.Km2. + Agricultural.Land.... + Land.Ar
                Tax.revenue.... + Total.tax.rate + Unemployment.rate + Urban_population + Latitude +
                Longitude, data = shrek, na.action = na.omit)
 
-summary(model1)
+summary(model1Life)
+
+model2Life <- lm(Life.expectancy ~ Density..P.Km2. + Infant.mortality +
+               Maternal.mortality.ratio + Minimum.wage +
+               Longitude, data = shrek, na.action = na.omit)
+model3Life<- lm(Life.expectancy ~ Density..P.Km2. + Infant.mortality +
+                  Maternal.mortality.ratio + Minimum.wage, data = shrek, na.action = na.omit)
+model4Life<- lm(Life.expectancy ~ Infant.mortality + Maternal.mortality.ratio + Minimum.wage, data = shrek, na.action = na.omit)
+anova(model4Life, model2Life)
+anova(model3Life, model2Life)
+
+
