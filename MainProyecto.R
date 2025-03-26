@@ -4,7 +4,7 @@ library(tidyverse)
 library(ggplot2)
 library(rstudioapi)
 
-setwd(dirname(getActiveDocumentContext()$path))
+#setwd(dirname(getActiveDocumentContext()$path))
 
 shrek <- read.csv("worlddata2023.csv", fileEncoding = "UTF-8")
 asno <- read.csv("2021.csv", fileEncoding = "UTF-8")
@@ -136,7 +136,7 @@ str(asno)
 
 ##### Data Preparation #####
 
-colnames(shrek)[2] = "Density (P/Km2)" # Column name was wrapped
+#colnames(shrek)[2] = "Density (P/Km2)" # Column name was wrapped
 # Add missing Country/City names (probably a encoding error by the author) 
 shrek[shrek == "S�����������"]<- "Sao Tome and Principe"
 shrek[shrek == "Bras���"]<- "Brasilia"
@@ -331,12 +331,36 @@ nine
 # min(asno$Perceptions.of.corruption)
 # max(asno$Perceptions.of.corruption)
 
-model1 <- lm(Density..P.Km2. ~ Agricultural.Land.... + Land.Area.Km2. + Armed.Forces.size + Birth.Rate +
-               Calling.Code + Co2.Emissions + CPI + CPI.Change.... + Currency.Code + Fertility.Rate +
+
+
+shrek[shrek == ""] <- NA
+clean_column <- function(col) {
+  col <- gsub(",", "", col)
+  col <- gsub("%", "", col)
+  col <- gsub("\\$", "", col)
+  col <- trimws(col)  # elimina espacios al inicio/final
+  as.numeric(col)
+}
+
+# Limpiar las columnas que son <chr> pero deberían ser numéricas
+cols_to_clean <- c("Density..P.Km2.", "Land.Area.Km2.", "Population", "GDP", 
+                   "Urban_population", "Co2.Emissions", "Minimum.wage", "Armed.Forces.size", "Agricultural.Land....",
+                   "CPI", "CPI.Change....", "Forested.Area....", "Gasoline.Price", "Gross.primary.education.enrollment....", "Gross.tertiary.education.enrollment....",
+                   "Out.of.pocket.health.expenditure", "Population..Labor.force.participation....", "Tax.revenue....", "Total.tax.rate", "Unemployment.rate")
+
+shrek <- shrek %>%
+  mutate(across(all_of(cols_to_clean), clean_column))
+glimpse(shrek)
+head(shrek)
+
+#Linear model predicting Life expectancy
+model1 <- lm(Life.expectancy ~ Density..P.Km2. + Agricultural.Land.... + Land.Area.Km2. + Armed.Forces.size + Birth.Rate +
+               Calling.Code + Co2.Emissions + CPI + CPI.Change.... + Fertility.Rate +
                Forested.Area.... + Gasoline.Price + GDP + Gross.primary.education.enrollment.... +
-               Gross.tertiary.education.enrollment.... + Infant.mortality + Life.expectancy +
+               Gross.tertiary.education.enrollment.... + Infant.mortality + Birth.Rate +
                Maternal.mortality.ratio + Minimum.wage + Out.of.pocket.health.expenditure +
                Physicians.per.thousand + Population + Population..Labor.force.participation.... +
                Tax.revenue.... + Total.tax.rate + Unemployment.rate + Urban_population + Latitude +
-               Longitude, data = shrek)
+               Longitude, data = shrek, na.action = na.omit)
+
 summary(model1)
