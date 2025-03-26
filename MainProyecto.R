@@ -20,9 +20,9 @@ print(asno)
 
 #### b. How many observations and variables do you have? ####
 dim(shrek) #195 rows, this is the number of countries
-           #35 columns, this is the number of parameters for each country
+#35 columns, this is the number of parameters for each country
 dim(asno) #149 rows, this is the number of countries
-          #20 columns, this is the number of parameters for each country
+#20 columns, this is the number of parameters for each country
 
 
 ##### c. Are there missing values? #####
@@ -32,13 +32,13 @@ dim(asno) #149 rows, this is the number of countries
 count_NA <- function(dataframe) {
   na_count <- sapply(dataframe, function(x) sum(is.na(x) | x == ""))
   na_percentage <- round((na_count / nrow(dataframe)) * 100, 2)
-
+  
   result <- data.frame(
     Column = names(na_count),
     NA_Count = na_count,
     NA_Percentage = na_percentage
   )
-
+  
   cat("\nNANs:\n")
   return(result)
 }
@@ -202,7 +202,7 @@ second
 # 4th: Relation between CO2 emisions and Urban population
 
 # Removing all the blank spaces of the variables we need
-                     
+
 # sum(is.na(shrek$Co2.Emissions)) = 0
 # sum(is.na(shrek$Urban_population)) = 0
 data4 <- shrek[!shrek$Co2.Emissions == "",]
@@ -221,28 +221,28 @@ fourth
 # The high CO2 emission is a clear consequence of a high urban population
 
 # 5th: Relation between Population density and Land area
-                     
+
 # Removing all the blank spaces of the variables we need
-                     
+
 
 # sum(is.na(data5$`Density (P/Km2)`)) == 0
-data5 <- data5[!data5$`Density (P/Km2)` == "",]
+#data5 <- data5[!data5$`Density (P/Km2)` == "",]
 # Converting needed rows into numeric ones
-data5$Land.Area.Km2. <- gsub(",","",data5$Land.Area.Km2.)
-data5 <- data5 %>% mutate(Land.Area.Km2. = as.numeric(Land.Area.Km2.))
-data5$`Density (P/Km2)` <- gsub(",","", data5$`Density (P/Km2)`)
-data5 <- data5 %>% mutate(`Density (P/Km2)` = as.numeric(`Density (P/Km2)`))
+#data5$Land.Area.Km2. <- gsub(",","",data5$Land.Area.Km2.)
+#data5 <- data5 %>% mutate(Land.Area.Km2. = as.numeric(Land.Area.Km2.))
+#data5$`Density (P/Km2)` <- gsub(",","", data5$`Density (P/Km2)`)
+#data5 <- data5 %>% mutate(`Density (P/Km2)` = as.numeric(`Density (P/Km2)`))
 
-five <- ggplot(data5, aes(x = Land.Area.Km2., y = `Density (P/Km2)`)) + geom_area(color = "red")
-five <- five + labs(title = "Relation between Population density and Land", x = "Area", y = "Population density")
-five
+#five <- ggplot(data5, aes(x = Land.Area.Km2., y = `Density (P/Km2)`)) + geom_area(color = "red")
+#five <- five + labs(title = "Relation between Population density and Land", x = "Area", y = "Population density")
+#five
 
 # When the Land Area is high, the Population density decreases a lot
 
 # 6th: Relation between Population: Labor fource participation and Unemployment rate
 
 # Removing all the blank spaces of the variables we need
-                     
+
 data6 <- shrek[!shrek$Population..Labor.force.participation.... == "",]
 data6 <- data6[!data6$Unemployment.rate == "",]
 
@@ -284,51 +284,49 @@ nine
 #We can see than in countries where is more social support people tend to live more
 
 # Variables summaries
-
 # Population Density
-shrek <- shrek[!is.na(shrek$Density..P.Km2.),]
-shrek$Density..P.Km2. <- gsub(",", "", shrek$Density..P.Km2.)
-shrek <- shrek %>% mutate(Density..P.Km2. = as.numeric(Density..P.Km2.)) 
-
-mean(shrek$Density..P.Km2.)
-median(shrek$Density..P.Km2.)
-sd(shrek$Density..P.Km2.)
-
-# Gasoline prices
-
-shrek$Gasoline.Price <- gsub("\\$","", shrek$Gasoline.Price)
-shrek <- shrek[!is.na(shrek$Gasoline.Price),]
-shrek <- shrek[!shrek$Gasoline.Price == "",]
-shrek <- shrek %>% mutate(Gasoline.Price = as.numeric(Gasoline.Price))
-
-mean(shrek$Gasoline.Price)
-median(shrek$Gasoline.Price)
-sd(shrek$Gasoline.Price)
-
-
-# Life expectancy
-
-shrek <- shrek[!is.na(shrek$Life.expectancy),]
-# shrek <- shrek[!shrek$Life.expectancy = "",]
-shrek <- shrek %>% mutate(Life.expectancy = as.numeric(Life.expectancy))
-
-mean(shrek$Life.expectancy)
-median(shrek$Life.expectancy)
-sd(shrek$Life.expectancy)
-
-
-# Generosity
-
-mean(asno$Generosity)
-median(asno$Generosity)
-sd(asno$Generosity)
-min(asno$Generosity)
-max(asno$Generosity)
-
-# Perceptions of corruption	
-mean(asno$Perceptions.of.corruption)
-median(asno$Perceptions.of.corruption)
-sd(asno$Perceptions.of.corruption)
-min(asno$Perceptions.of.corruption)
-max(asno$Perceptions.of.corruption)
-
+#shrek <- shrek[!is.na(shrek$Density..P.Km2.),]
+# shrek$Density..P.Km2. <- gsub(",", "", shrek$Density..P.Km2.)
+# shrek <- shrek %>% mutate(Density..P.Km2. = as.numeric(Density..P.Km2.)) 
+# 
+# mean(shrek$Density..P.Km2.)
+# median(shrek$Density..P.Km2.)
+# sd(shrek$Density..P.Km2.)
+# 
+# # Gasoline prices
+# 
+# shrek$Gasoline.Price <- gsub("\\$","", shrek$Gasoline.Price)
+# shrek <- shrek[!is.na(shrek$Gasoline.Price),]
+# shrek <- shrek[!shrek$Gasoline.Price == "",]
+# shrek <- shrek %>% mutate(Gasoline.Price = as.numeric(Gasoline.Price))
+# 
+# mean(shrek$Gasoline.Price)
+# median(shrek$Gasoline.Price)
+# sd(shrek$Gasoline.Price)
+# 
+# 
+# # Life expectancy
+# 
+# shrek <- shrek[!is.na(shrek$Life.expectancy),]
+# # shrek <- shrek[!shrek$Life.expectancy = "",]
+# shrek <- shrek %>% mutate(Life.expectancy = as.numeric(Life.expectancy))
+# 
+# mean(shrek$Life.expectancy)
+# median(shrek$Life.expectancy)
+# sd(shrek$Life.expectancy)
+# 
+# 
+# # Generosity
+# 
+# mean(asno$Generosity)
+# median(asno$Generosity)
+# sd(asno$Generosity)
+# min(asno$Generosity)
+# max(asno$Generosity)
+# 
+# # Perceptions of corruption	
+# mean(asno$Perceptions.of.corruption)
+# median(asno$Perceptions.of.corruption)
+# sd(asno$Perceptions.of.corruption)
+# min(asno$Perceptions.of.corruption)
+# max(asno$Perceptions.of.corruption)
