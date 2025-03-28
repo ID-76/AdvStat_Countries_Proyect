@@ -383,3 +383,17 @@ model4Life<-lm(Life.expectancy ~ Density..P.Km2. + Infant.mortality + Minimum.wa
                  Longitude, data = shrek, na.action = na.omit)
 summary(model4Life)
 confint(model4Life)
+
+n <- nrow(shrek)
+train_ids <- sample(1:n, size = 0.8 * n)
+train_data <- shrek[train_ids, ]
+test_data <- na.omit(shrek[-train_ids, ])
+
+# Train the data with the 80%
+model_train <- lm(Life.expectancy ~ Density..P.Km2. + Infant.mortality + Minimum.wage + Longitude, 
+                  data = train_data, na.action = na.exclude)
+
+#Prediction and confidence intervals
+predict(model_train, newdata = test_data, interval = "prediction")
+predict(model4Life, newdata = test_data, interval = "confidence")
+
