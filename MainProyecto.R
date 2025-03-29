@@ -3,8 +3,10 @@
 library(tidyverse)
 library(ggplot2)
 library(rstudioapi)
+library(glue)
+library(stringdist)
 
-#setwd(dirname(getActiveDocumentContext()$path))
+setwd(dirname(getActiveDocumentContext()$path))
 
 shrek <- read.csv("worlddata2023.csv", fileEncoding = "UTF-8")
 asno <- read.csv("2021.csv", fileEncoding = "UTF-8")
@@ -352,6 +354,18 @@ shrek <- shrek %>%
   mutate(across(all_of(cols_to_clean), clean_column))
 glimpse(shrek)
 head(shrek)
+
+
+
+
+#### MERGE OF THE TWO DATSETS 
+asno2 <- asno
+colnames(asno2)[1] <- "Country"
+# Merge using inner join to keep only common country names
+dragona <- inner_join(shrek, asno2, by = "Country")
+
+
+
 
 #Linear model predicting Life expectancy
 model1Life <- lm(Life.expectancy ~ Density..P.Km2. + Agricultural.Land.... + Land.Area.Km2. + Armed.Forces.size + Birth.Rate +
