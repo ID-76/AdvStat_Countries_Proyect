@@ -449,4 +449,72 @@ abline (0 , 0)
 
 
 
-##### LOGISTIC
+##### LOGISTIC REGRESSION
+
+fiona <- dragona
+
+# Define democratic countries (DEFINED USING CHATGPT)
+democratic <- c("Albania", "Argentina", "Armenia", "Australia", "Austria", "Belgium", "Benin", 
+                "Bosnia and Herzegovina", "Botswana", "Brazil", "Bulgaria", "Canada", "Chile", 
+                "Colombia", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Denmark", 
+                "Dominican Republic", "Ecuador", "El Salvador", "Estonia", "Finland", "France", 
+                "Georgia", "Germany", "Ghana", "Greece", "Guatemala", "Iceland", "India", 
+                "Indonesia", "Israel", "Italy", "Jamaica", "Japan", "Kenya", "Latvia", "Lesotho", 
+                "Liberia", "Lithuania", "Luxembourg", "Malawi", "Malaysia", "Malta", "Mauritius", 
+                "Mexico", "Moldova", "Mongolia", "Montenegro", "Namibia", "Nepal", "Netherlands", 
+                "New Zealand", "Nicaragua", "North Macedonia", "Norway", "Panama", "Paraguay", 
+                "Peru", "Philippines", "Poland", "Portugal", "Romania", "Senegal", "Serbia", 
+                "Slovakia", "Slovenia", "South Africa", "South Korea", "Spain", "Sri Lanka", 
+                "Sweden", "Switzerland", "Ukraine", "United Kingdom", "United States", "Uruguay", "Zambia")
+
+# Add binary democracy variable
+fiona$Democracy_Status <- ifelse(fiona$Country %in% democratic, 1, 0)
+fiona$Democracy_Status <- as.factor(fiona$Democracy_Status)  # Convert to factor
+
+# Select initial predictors
+predictors <- c("Logged.GDP.per.capita", "Gross.primary.education.enrollment....", 
+                "Explained.by..Freedom.to.make.life.choices", "Perceptions.of.corruption")
+
+# Remove NA values
+fiona <- na.omit(fiona[, c("Democracy_Status", predictors)])
+
+# Initial visualization: Boxplots
+for (var in predictors) {
+  print(
+    ggplot(fiona, aes(x = Democracy_Status, y = .fiona[[var]], fill = Democracy_Status)) +
+      geom_boxplot() +
+      labs(title = paste("Boxplot of", var, "by Democracy")) +
+      theme_minimal()
+  )
+}
+
+# Correlation analysis
+cor_matrix <- cor(fiona[, predictors])
+print(cor_matrix)
+
+# Split data
+set.seed(123)
+trainIndex <- createDataPartition(fiona$Democracy_Status, p = 0.7, list = FALSE)
+train_data <- fiona[trainIndex, ]
+test_data <- fiona[-trainIndex, ]
+
+# Fit logistic regression model
+final_model <- glm(Democracy_Status ~ ., fiona = train_data, family = binomial)
+summary(final_model)
+
+# Predictions
+pred_prob <- predict(final_model, newdata = test_data, type = "response")
+pred_class <- ifelse(pred_prob > 0.5, 1, 0)
+pred_class <- as.factor(pred_class)
+
+# Confusion matrix
+test_data$Democracy_Status <- as.factor(test_data$Democracy_Status)
+conf_matrix <- confusionMatrix(pred_class, test_data$Democracy_Status)
+print(conf_matrix)
+
+# ROC curve
+roc_curve <- roc(test_data$Democracy_Status, pred_prob)
+plot(roc_curve, col="blue", main="ROC Curve")
+auc_value <- auc(roc_curve)
+cat("AUC:", auc_value, "\n")
+
