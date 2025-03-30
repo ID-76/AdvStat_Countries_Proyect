@@ -441,3 +441,12 @@ stud_resids <- studres(model4Life)
 plot(model4Life$fitted.values,stud_resids,
      xlab="Fitted", ylab ="Studentized Residuals")
 abline (0 , 0)
+
+
+
+
+
+
+
+
+##### LOGISTIC
