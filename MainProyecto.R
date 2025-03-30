@@ -5,6 +5,7 @@ library(ggplot2)
 library(rstudioapi)
 library(glue)
 library(stringdist)
+library(MASS)
 
 setwd(dirname(getActiveDocumentContext()$path))
 
@@ -369,19 +370,19 @@ dragona <- inner_join(shrek, asno2, by = "Country")
 
 #Linear model predicting Life expectancy
 model1Life <- lm(Life.expectancy ~ Density..P.Km2. + Agricultural.Land.... + Land.Area.Km2. + Armed.Forces.size + Birth.Rate +
-               Calling.Code + Co2.Emissions + CPI + CPI.Change.... + Fertility.Rate +
-               Forested.Area.... + Gasoline.Price + GDP + Gross.primary.education.enrollment.... +
-               Gross.tertiary.education.enrollment.... + Infant.mortality + Birth.Rate +
-               Maternal.mortality.ratio + Minimum.wage + Out.of.pocket.health.expenditure +
-               Physicians.per.thousand + Population + Population..Labor.force.participation.... +
-               Tax.revenue.... + Total.tax.rate + Unemployment.rate + Urban_population + Latitude +
-               Longitude, data = shrek, na.action = na.omit)
+                   Calling.Code + Co2.Emissions + CPI + CPI.Change.... + Fertility.Rate +
+                   Forested.Area.... + Gasoline.Price + GDP + Gross.primary.education.enrollment.... +
+                   Gross.tertiary.education.enrollment.... + Infant.mortality + Birth.Rate +
+                   Maternal.mortality.ratio + Minimum.wage + Out.of.pocket.health.expenditure +
+                   Physicians.per.thousand + Population + Population..Labor.force.participation.... +
+                   Tax.revenue.... + Total.tax.rate + Unemployment.rate + Urban_population + Latitude +
+                   Longitude, data = shrek, na.action = na.omit)
 
 summary(model1Life)
 
 model2Life <- lm(Life.expectancy ~ Density..P.Km2. + Infant.mortality +
-               Maternal.mortality.ratio + Minimum.wage +
-               Longitude, data = shrek, na.action = na.omit)
+                   Maternal.mortality.ratio + Minimum.wage +
+                   Longitude, data = shrek, na.action = na.omit)
 summary(model2Life)
 
 model3Life<- lm(Life.expectancy ~ Density..P.Km2. + Infant.mortality +
@@ -411,3 +412,32 @@ model_train <- lm(Life.expectancy ~ Density..P.Km2. + Infant.mortality + Minimum
 predict(model_train, newdata = test_data, interval = "prediction")
 predict(model4Life, newdata = test_data, interval = "confidence")
 
+#With this plot we can see that residuals aren't correlated 
+residuals_clean <- na.omit(model_final$residuals)
+plot(residuals_clean, type = "o", main="Residuals vs. Observation Order",
+     xlab="Observations", ylab="Residuals", col="green")
+abline(h=0, col="black", lwd=2, lty=2)
+
+#We can see that our model is completly linear
+plot(model4Life, 1)
+
+#Although we can see a decrease in the variance, it isn't significative enough to say that it is heteroscedasticity
+ggplot(data = data.frame(Fitted = model4Life$fitted.values, Residuals = model4Life$residuals), 
+       aes(x = Fitted, y = Residuals)) +
+  geom_point(alpha = 0.3, color = "black") +
+  geom_smooth(color = "red") +
+  geom_quantile(quantiles = c(0.05, 0.95), color = "blue", linetype = "dashed") +
+  labs(title = "Residuals vs Fitted Values",
+       x = "Fitted Values",
+       y = "Residuals")
+
+#The high W and p-value of the shapiro test show us that the model follows a normal distribution
+shapiro.test(model4Life$residuals)
+
+stud_resids <- studres(model4Life)
+
+#Observations with a studentized residual larger than 3 are considered outliers, so 
+#will be removed from our model
+plot(model4Life$fitted.values,stud_resids,
+     xlab="Fitted", ylab ="Studentized Residuals")
+abline (0 , 0)
