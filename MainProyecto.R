@@ -436,15 +436,17 @@ shapiro.test(model4Life$residuals)
 
 stud_resids <- studres(model4Life)
 
-#Observations with a studentized residual larger than 3 are considered outliers, so 
-#will be removed from our model
 plot(model4Life$fitted.values,stud_resids,
      xlab="Fitted", ylab ="Studentized Residuals")
 abline (0 , 0)
+outliers <- ifelse(abs(stud_resids) > 3, TRUE, FALSE)
+#Now that we have identified the outliers, we are going to analyse if the model improves without them
+model_clean <- update(model4Life, subset = -outliers)
 
-
-
-
+#As the outliers don't look like if they were a human error, and as the model prediction 
+#capacity doesn't improve with or without outliers, we are not going to eliminate them
+summary(model_clean)
+summary(model4Life)
 
 
 
