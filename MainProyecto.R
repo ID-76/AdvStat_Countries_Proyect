@@ -371,7 +371,7 @@ dragona <- inner_join(shrek, asno2, by = "Country")
 
 
 
-
+###################################################################
 #Linear model predicting Life expectancy
 model1Life <- lm(Life.expectancy ~ Density..P.Km2. + Agricultural.Land.... + Land.Area.Km2. + Armed.Forces.size + Birth.Rate +
                    Calling.Code + Co2.Emissions + CPI + CPI.Change.... + Fertility.Rate +
@@ -438,6 +438,7 @@ ggplot(data = data.frame(Fitted = model4Life$fitted.values, Residuals = model4Li
 
 #The high W and p-value of the shapiro test show us that the model follows a normal distribution
 shapiro.test(model4Life$residuals)
+plot(model4Life,2)
 
 stud_resids <- studres(model4Life)
 
