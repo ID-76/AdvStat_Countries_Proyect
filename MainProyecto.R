@@ -541,7 +541,7 @@ plot(model3tristezalog$fitted.values,stud_resids2,
 abline (0 , 0)
 outliers <- ifelse(abs(stud_resids2) > 3, TRUE, FALSE)
 #The outlier is the oberserved value 172
-model_clean2 <- update(model3tristezalog, subset = -outliers)
+model_clean2 <- update(model3tristezalog, subset = !outliers)
 summary(model_clean2)
 summary(model3tristezalog)
 plot(model_clean2, 2)
