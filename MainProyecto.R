@@ -6,6 +6,10 @@ library(rstudioapi)
 library(glue)
 library(stringdist)
 library(MASS)
+library(dplyr)
+library(caret)
+library(pROC)
+
 
 setwd(dirname(getActiveDocumentContext()$path))
 
@@ -492,6 +496,7 @@ head(predictionx2)
 #Residual Plot
 residuals_clean <- na.omit(model_train2$residuals)
 
+<<<<<<< Updated upstream
 #Residuals vs. Observations Plot
 plot(residuals_clean, type = "o", main="Residuals vs. Observation Order",
      xlab="Observations", ylab="Residuals", col="green")
@@ -512,6 +517,7 @@ plot(model3tristeza, 1)
 #Applying a log transformation to the predictors could help straighten the trend, 
 #stabilize variance, and improve the model fit
 
+<<<<<<< HEAD
 model3tristezalog <- lm(Birth.Rate ~ log(Gross.tertiary.education.enrollment....)  
                         + log(Maternal.mortality.ratio) +
                           log(Physicians.per.thousand), data = train_data, na.action = na.omit)
@@ -535,6 +541,8 @@ ggplot(data = data.frame(Fitted = model3tristezalog$fitted.values, Residuals = m
        y = "Residuals")
 
 
+=======
+>>>>>>> origin/main
 
 
 ##### LOGISTIC REGRESSION
@@ -561,47 +569,55 @@ fiona$Democracy_Status <- as.factor(fiona$Democracy_Status)  # Convert to factor
 
 # Select initial predictors
 predictors <- c("Logged.GDP.per.capita", "Gross.primary.education.enrollment....", 
-                "Explained.by..Freedom.to.make.life.choices", "Perceptions.of.corruption")
+                "Explained.by..Freedom.to.make.life.choices", "Perceptions.of.corruption", 
+                "Armed.Forces.size", "CPI", "GDP", "Gross.primary.education.enrollment....", 
+                "Gross.tertiary.education.enrollment....", "Total.tax.rate", "Urban_population" )
 
 # Remove NA values
 fiona <- na.omit(fiona[, c("Democracy_Status", predictors)])
 
-# Initial visualization: Boxplots
-for (var in predictors) {
-  print(
-    ggplot(fiona, aes(x = Democracy_Status, y = .fiona[[var]], fill = Democracy_Status)) +
-      geom_boxplot() +
-      labs(title = paste("Boxplot of", var, "by Democracy")) +
-      theme_minimal()
-  )
-}
 
 # Correlation analysis
 cor_matrix <- cor(fiona[, predictors])
 print(cor_matrix)
 
 # Split data
-set.seed(123)
-trainIndex <- createDataPartition(fiona$Democracy_Status, p = 0.7, list = FALSE)
-train_data <- fiona[trainIndex, ]
-test_data <- fiona[-trainIndex, ]
+n_log <- nrow(fiona)
+train_ids_log <- sample(1:n, size = 0.8 * n)
+train_data_log <- fiona[train_ids_log, ]
+test_data_log <- na.omit(fiona[-train_ids_log, ])
 
 # Fit logistic regression model
-final_model <- glm(Democracy_Status ~ ., fiona = train_data, family = binomial)
-summary(final_model)
+fiona_Model1 <- glm(Democracy_Status ~ Logged.GDP.per.capita + Explained.by..Freedom.to.make.life.choices + 
+                      Perceptions.of.corruption + Armed.Forces.size + CPI + GDP + Gross.primary.education.enrollment.... + 
+                      Gross.tertiary.education.enrollment.... + Total.tax.rate + Urban_population, 
+                    data = train_data_log, family = binomial)
+summary(fiona_Model1)
+
+# We remove the least related predictors
+fiona_Model2 <- glm(Democracy_Status ~ Explained.by..Freedom.to.make.life.choices + Perceptions.of.corruption +  
+                      Gross.primary.education.enrollment.... + Gross.tertiary.education.enrollment...., 
+                    data = train_data_log, family = binomial)
+summary(fiona_Model2)
+
+fiona_Model3 <- glm(Democracy_Status ~ Explained.by..Freedom.to.make.life.choices  +  
+                      Gross.primary.education.enrollment.... + Gross.tertiary.education.enrollment...., 
+                    data = train_data_log, family = binomial)
+summary(fiona_Model3)
+##fiona model 2 better than model 3
 
 # Predictions
-pred_prob <- predict(final_model, newdata = test_data, type = "response")
+pred_prob <- predict(fiona_Model2, newdata = test_data_log, type = "response")
 pred_class <- ifelse(pred_prob > 0.5, 1, 0)
 pred_class <- as.factor(pred_class)
 
 # Confusion matrix
-test_data$Democracy_Status <- as.factor(test_data$Democracy_Status)
-conf_matrix <- confusionMatrix(pred_class, test_data$Democracy_Status)
+test_data_log$Democracy_Status <- as.factor(test_data_log$Democracy_Status)
+conf_matrix <- confusionMatrix(pred_class, test_data_log$Democracy_Status) 
 print(conf_matrix)
 
 # ROC curve
-roc_curve <- roc(test_data$Democracy_Status, pred_prob)
+roc_curve <- roc(test_data_log$Democracy_Status, pred_prob)
 plot(roc_curve, col="blue", main="ROC Curve")
 auc_value <- auc(roc_curve)
 cat("AUC:", auc_value, "\n")
