@@ -449,9 +449,48 @@ model_clean <- update(model4Life, subset = -outliers)
 summary(model_clean)
 summary(model4Life)
 
+###################################################################
+#We choose Bith.Rate as the variable to predict because we did Minimum.wage and 
+#followed a non-linear regression impossible to correct it with log()
+modeltristeza <- lm(Birth.Rate ~ Density..P.Km2. + Agricultural.Land.... + Land.Area.Km2. + CPI +
+                      Calling.Code + Life.expectancy + GDP + CPI.Change.... + Fertility.Rate +
+                      Forested.Area.... + Gasoline.Price + Unemployment.rate + Gross.primary.education.enrollment.... +
+                      Gross.tertiary.education.enrollment.... + Infant.mortality + Minimum.wage +
+                      Maternal.mortality.ratio + Armed.Forces.size + Out.of.pocket.health.expenditure +
+                      Physicians.per.thousand + Co2.Emissions + Population..Labor.force.participation.... +
+                      Tax.revenue.... + Total.tax.rate + Urban_population + Population + Latitude +
+                      Longitude, data = shrek, na.action = na.omit)
+summary(modeltristeza)
+#We remove the ones that didn't make sense with Birth.Rate and the ones that weren't related(high p-value)
+model2tristeza <- lm(Birth.Rate ~ Unemployment.rate + Gross.primary.education.enrollment.... +
+                       Gross.tertiary.education.enrollment....  + Maternal.mortality.ratio + Out.of.pocket.health.expenditure +
+                       Physicians.per.thousand, data = shrek, na.action = na.omit)
+summary(model2tristeza)
+#The final stage of this model has all the related variables for Birth.Rate
+model3tristeza <- lm(Birth.Rate ~ Gross.tertiary.education.enrollment....  
+                     + Maternal.mortality.ratio + Physicians.per.thousand, data = shrek, na.action = na.omit)
+summary(model3tristeza)
 
+#Comparison of models
+#anova(model3tristeza, model2tristeza)
 
+#confidence 
+confint(model3tristeza)
+confint(model3tristeza, level = 0.99)
 
+# Train the data with the 80%
+model_train2 <- lm(Birth.Rate ~ Gross.tertiary.education.enrollment....  
+                   + Maternal.mortality.ratio + Physicians.per.thousand,
+                   data = train_data, na.action = na.omit)
+summary(model_train2)
+
+prediction_confidence <- predict(model_train2, newdata = test_data, interval = "confidence")
+predictionx2 <- predict(model_train2, newdata = test_data, interval = "prediction")
+head(prediction_confidence)
+head(predictionx2)
+
+#Residual Plot
+residuals_clean <- na.omit(model_train2$residuals)9
 ##### LOGISTIC REGRESSION
 
 fiona <- dragona
