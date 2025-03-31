@@ -517,7 +517,6 @@ plot(model3tristeza, 1)
 #Applying a log transformation to the predictors could help straighten the trend, 
 #stabilize variance, and improve the model fit
 
-<<<<<<< HEAD
 model3tristezalog <- lm(Birth.Rate ~ log(Gross.tertiary.education.enrollment....)  
                         + log(Maternal.mortality.ratio) +
                           log(Physicians.per.thousand), data = train_data, na.action = na.omit)
@@ -530,7 +529,7 @@ plot(model3tristezalog,1)
 #The red line shows the remaining patterns, while the dashed blue 
 #quantile lines show how they spread out from the residuals,
 #in this case it's possible to note a minor decrease in variance,
-#so is enough to confirm heteroscedasticity
+#so isn't enough to confirm heteroscedasticity
 ggplot(data = data.frame(Fitted = model3tristezalog$fitted.values, Residuals = model3tristezalog$residuals), 
        aes(x = Fitted, y = Residuals)) +
   geom_point(alpha = 0.3, color = "black") +
@@ -539,10 +538,13 @@ ggplot(data = data.frame(Fitted = model3tristezalog$fitted.values, Residuals = m
   labs(title = "Residuals vs Fitted Values",
        x = "Fitted Values",
        y = "Residuals")
+#We are going to verify if the model follows a normal distribution
+shapiro.test(model3tristezalog)
+plot(model3tristezalog)
+#The residuals are not perfectly normal, but the residuals approximate a normal distribution 
+#at the center
 
 
-=======
->>>>>>> origin/main
 
 
 ##### LOGISTIC REGRESSION
