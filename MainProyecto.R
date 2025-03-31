@@ -414,7 +414,7 @@ predict(model_train, newdata = test_data, interval = "prediction")
 predict(model4Life, newdata = test_data, interval = "confidence")
 
 #With this plot we can see that residuals aren't correlated 
-residuals_clean <- na.omit(model_final$residuals)
+residuals_clean <- na.omit(model4Life$residuals)
 plot(residuals_clean, type = "o", main="Residuals vs. Observation Order",
      xlab="Observations", ylab="Residuals", col="green")
 abline(h=0, col="black", lwd=2, lty=2)
