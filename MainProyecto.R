@@ -453,6 +453,116 @@ model_clean <- update(model4Life, subset = -outliers)
 summary(model_clean)
 summary(model4Life)
 
+
+###################################################################
+#Linear model predicting Ladder score
+model1Free <- lm(Ladder.score ~ Density..P.Km2. + Agricultural.Land.... + Land.Area.Km2. + Armed.Forces.size + Birth.Rate +
+                    Calling.Code + Co2.Emissions + CPI + CPI.Change.... + Fertility.Rate +
+                    Forested.Area.... + Gasoline.Price + GDP + Gross.primary.education.enrollment.... +
+                    Gross.tertiary.education.enrollment.... + Infant.mortality + Birth.Rate +
+                    Maternal.mortality.ratio + Minimum.wage + Out.of.pocket.health.expenditure +
+                    Physicians.per.thousand + Population + Population..Labor.force.participation.... +
+                    Tax.revenue.... + Total.tax.rate + Unemployment.rate + Urban_population + Latitude +
+                    Longitude + Regional.indicator + Standard.error.of.ladder.score +
+                    Social.support + Logged.GDP.per.capita + Healthy.life.expectancy + Perceptions.of.corruption +
+                    Generosity + Freedom.to.make.life.choices, data = dragona, na.action = na.omit)
+
+summary(model1Free)
+
+model2Free <- lm(Ladder.score ~ Agricultural.Land.... + Land.Area.Km2. + Birth.Rate +
+                   Calling.Code + Co2.Emissions + CPI + Fertility.Rate +
+                   Forested.Area.... + GDP + Gross.primary.education.enrollment.... +
+                   Gross.tertiary.education.enrollment.... + Infant.mortality + Birth.Rate +
+                   Maternal.mortality.ratio + Minimum.wage + Out.of.pocket.health.expenditure +
+                   Physicians.per.thousand + Population + Population..Labor.force.participation.... +
+                   Tax.revenue.... + Unemployment.rate + Urban_population + Latitude +
+                   Longitude + Standard.error.of.ladder.score +
+                   Social.support + Logged.GDP.per.capita + Healthy.life.expectancy + Perceptions.of.corruption +
+                   Generosity + Freedom.to.make.life.choices, data = dragona, na.action = na.omit)
+summary(model2Free)
+
+model3Free <- lm(Ladder.score ~ Agricultural.Land.... +
+                   Calling.Code + Co2.Emissions + CPI + Fertility.Rate + Gross.primary.education.enrollment.... +
+                   Gross.tertiary.education.enrollment.... + Infant.mortality +
+                   Maternal.mortality.ratio + Minimum.wage + Out.of.pocket.health.expenditure +
+                   Population + Population..Labor.force.participation.... +
+                   Tax.revenue.... + Unemployment.rate + Urban_population + Latitude +
+                   Longitude + Standard.error.of.ladder.score +
+                   Social.support + Logged.GDP.per.capita + Healthy.life.expectancy +
+                   Generosity + Freedom.to.make.life.choices, data = dragona, na.action = na.omit)
+summary(model3Free)
+
+model4Free <- lm(Ladder.score ~ Calling.Code + Co2.Emissions + CPI + Fertility.Rate + 
+                   Gross.primary.education.enrollment.... + Gross.tertiary.education.enrollment.... + Infant.mortality +
+                   Maternal.mortality.ratio + Minimum.wage + Out.of.pocket.health.expenditure +
+                   Population + Unemployment.rate + Urban_population +
+                   Longitude + Social.support + Logged.GDP.per.capita + Healthy.life.expectancy +
+                   Freedom.to.make.life.choices, data = dragona, na.action = na.omit)
+summary(model4Free)
+
+model5Free <- lm(Ladder.score ~ CPI + Fertility.Rate + Gross.tertiary.education.enrollment.... +
+                   Maternal.mortality.ratio + Minimum.wage + Out.of.pocket.health.expenditure +
+                   Population + Unemployment.rate + Urban_population + Longitude + Social.support +
+                   Freedom.to.make.life.choices, data = dragona, na.action = na.omit)
+summary(model5Free)
+
+model6Free <- lm(Ladder.score ~ Minimum.wage + Unemployment.rate + Longitude + Social.support +
+                   Freedom.to.make.life.choices, data = dragona, na.action = na.omit)
+summary(model6Free)
+
+confint(model6Free)
+
+# We reduce data to 80%
+n <- nrow(dragona)
+train_ids <- sample(1:n, size = 0.8 * n)
+train_data <- dragona[train_ids, ]
+test_data <- na.omit(dragona[-train_ids, ])
+
+# Train the data with the 80%
+model_train <- lm(Ladder.score ~ Minimum.wage + Unemployment.rate + Longitude + Social.support +
+                  Freedom.to.make.life.choices, data = train_data, na.action = na.exclude)
+
+# Prediction and confidence intervals
+predict(model_train, newdata = test_data, interval = "prediction")
+predict(model6Free, newdata = test_data, interval = "confidence")
+
+# With this plot we can see that residuals aren't correlated 
+residuals_clean <- na.omit(model_train$residuals)
+plot(residuals_clean, type = "o", main="Residuals vs. Observation Order",
+     xlab="Observations", ylab="Residuals", col="green")
+abline(h=0, col="black", lwd=2, lty=2)
+
+# We can see that our model is completly linear
+plot(model6Free, 1)
+
+# Although we can see a decrease in the variance, it isn't significative enough to say that it is heteroscedasticity
+ggplot(data = data.frame(Fitted = model6Free$fitted.values, Residuals = model6Free$residuals), 
+       aes(x = Fitted, y = Residuals)) +
+  geom_point(alpha = 0.3, color = "black") +
+  geom_smooth(color = "red") +
+  geom_quantile(quantiles = c(0.05, 0.95), color = "blue", linetype = "dashed") +
+  labs(title = "Residuals vs Fitted Values",
+       x = "Fitted Values",
+       y = "Residuals")
+
+# The high W and p-value of the shapiro test show us that the model follows a normal distribution
+shapiro.test(model6Free$residuals)
+
+stud_resids <- studres(model6Free)
+
+plot(model6Free$fitted.values,stud_resids,
+     xlab="Fitted", ylab ="Studentized Residuals")
+abline (0 , 0)
+outliers <- ifelse(abs(stud_resids) > 3, TRUE, FALSE)
+#Now that we have identified the outliers, we are going to analyse if the model improves without them
+model_clean <- update(model6Free, subset = -outliers)
+
+# As the outliers don't look like if they were a human error, and as the model prediction 
+#capacity doesn't improve with or without outliers, we are not going to eliminate them
+summary(model_clean)
+summary(model6Free)
+
+                     
 ###################################################################
 #We choose Bith.Rate as the variable to predict because we did Minimum.wage and 
 #followed a non-linear regression impossible to correct it with log()
