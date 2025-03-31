@@ -490,7 +490,28 @@ head(prediction_confidence)
 head(predictionx2)
 
 #Residual Plot
-residuals_clean <- na.omit(model_train2$residuals)9
+residuals_clean <- na.omit(model_train2$residuals)
+
+#Residuals vs. Observations Plot
+plot(residuals_clean, type = "o", main="Residuals vs. Observation Order",
+     xlab="Observations", ylab="Residuals", col="green")
+
+abline(h=0, col="black", lwd=2, lty=2)
+
+#Residual vs. graph predicted values, predicted values using the trained model
+predictions <- predict(model_train2, newdata = test_data)
+#Caculate residuals
+residuals_clean <- test_data$Birth.Rate - predictions
+#Residuals vs. Predictions Plot, plot residuals against predicted values to check for patterns
+plot(predictions, residuals_clean, main = "Residuals vs Predicted Values",
+     xlab = "Predicted Values", ylab = "Residuals", col = "blue")
+abline(h = 0, col = "red", lty = 2)
+
+plot(model3tristeza, 1)
+#The residuals vs. fitted values plot shows a curved pattern, suggesting non-linearity in the model. 
+#Applying a log transformation to the predictors could help straighten the trend, 
+#stabilize variance, and improve the model fit
+
 ##### LOGISTIC REGRESSION
 
 fiona <- dragona
