@@ -455,6 +455,106 @@ summary(model4Life)
 
 
 ###################################################################
+
+###################################################################
+#We choose Bith.Rate as the variable to predict because we did Minimum.wage and 
+#followed a non-linear regression impossible to correct it with log()
+modeltristeza <- lm(Birth.Rate ~ Density..P.Km2. + Agricultural.Land.... + Land.Area.Km2. + CPI +
+                      Calling.Code + Life.expectancy + GDP + CPI.Change.... + Fertility.Rate +
+                      Forested.Area.... + Gasoline.Price + Unemployment.rate + Gross.primary.education.enrollment.... +
+                      Gross.tertiary.education.enrollment.... + Infant.mortality + Minimum.wage +
+                      Maternal.mortality.ratio + Armed.Forces.size + Out.of.pocket.health.expenditure +
+                      Physicians.per.thousand + Co2.Emissions + Population..Labor.force.participation.... +
+                      Tax.revenue.... + Total.tax.rate + Urban_population + Population + Latitude +
+                      Longitude, data = shrek, na.action = na.omit)
+summary(modeltristeza)
+#We remove the ones that didn't make sense with Birth.Rate and the ones that weren't related(high p-value)
+model2tristeza <- lm(Birth.Rate ~ Unemployment.rate + Gross.primary.education.enrollment.... +
+                       Gross.tertiary.education.enrollment....  + Maternal.mortality.ratio + Out.of.pocket.health.expenditure +
+                       Physicians.per.thousand, data = shrek, na.action = na.omit)
+summary(model2tristeza)
+#The final stage of this model has all the related variables for Birth.Rate
+model3tristeza <- lm(Birth.Rate ~ Gross.tertiary.education.enrollment....  
+                     + Maternal.mortality.ratio + Physicians.per.thousand, data = shrek, na.action = na.omit)
+summary(model3tristeza)
+
+#Comparison of models
+#anova(model3tristeza, model2tristeza)
+
+#confidence 
+confint(model3tristeza)
+confint(model3tristeza, level = 0.99)
+
+# Train the data with the 80%
+model_train2 <- lm(Birth.Rate ~ Gross.tertiary.education.enrollment....  
+                   + Maternal.mortality.ratio + Physicians.per.thousand,
+                   data = train_data, na.action = na.omit)
+summary(model_train2)
+
+prediction_confidence <- predict(model_train2, newdata = test_data, interval = "confidence")
+predictionx2 <- predict(model_train2, newdata = test_data, interval = "prediction")
+head(prediction_confidence)
+head(predictionx2)
+
+#Residual Plot
+residuals_clean <- na.omit(model_train2$residuals)
+
+#Residuals vs. Observations Plot
+plot(residuals_clean, type = "o", main="Residuals vs. Observation Order",
+     xlab="Observations", ylab="Residuals", col="green")
+
+abline(h=0, col="black", lwd=2, lty=2)
+
+plot(model3tristeza, 1)
+#The residuals vs. fitted values plot shows a curved pattern, suggesting non-linearity in the model. 
+#Applying a log transformation to the predictors could help straighten the trend, 
+#stabilize variance, and improve the model fit
+
+model3tristezalog <- lm(Birth.Rate ~ log(Gross.tertiary.education.enrollment....)  
+                        + log(Maternal.mortality.ratio) +
+                          log(Physicians.per.thousand), data = train_data, na.action = na.omit)
+plot(model3tristezalog,1)
+#After applying the log transformation, the residuals now show a more random spread around zero, reducing 
+#the previous curve, this suggests that the transformation improved the linearity and model fit
+
+
+#This graph helps visualize the distribution of the residuals
+#The red line shows the remaining patterns, while the dashed blue 
+#quantile lines show how they spread out from the residuals,
+#in this case it's possible to note a minor decrease in variance,
+#so isn't enough to confirm heteroscedasticity
+ggplot(data = data.frame(Fitted = model3tristezalog$fitted.values, Residuals = model3tristezalog$residuals), 
+       aes(x = Fitted, y = Residuals)) +
+  geom_point(alpha = 0.3, color = "black") +
+  geom_smooth(color = "red") +
+  geom_quantile(quantiles = c(0.05, 0.95), color = "blue", linetype = "dashed") +
+  labs(title = "Residuals vs Fitted Values",
+       x = "Fitted Values",
+       y = "Residuals")
+#We are going to verify if the model follows a normal distribution
+shapiro.test(model3tristezalog$residuals)
+plot(model3tristezalog,2)
+#The residuals are not perfectly normal, but the residuals approximate a normal distribution 
+#at the center
+
+stud_resids2 <- studres(model3tristezalog)
+
+plot(model3tristezalog$fitted.values,stud_resids2,
+     xlab="Fitted", ylab ="Studentized Residuals")
+abline (0 , 0)
+outliers <- ifelse(abs(stud_resids2) > 3, TRUE, FALSE)
+#The outlier is the oberserved value 172
+model_clean2 <- update(model3tristezalog, subset = !outliers)
+summary(model_clean2)
+summary(model3tristezalog)
+plot(model_clean2, 2)
+shapiro.test(model_clean2$residuals)
+plot(model_clean2, 1)
+#We have appreciate that it's no worth it to remove the outlier because we suffer
+#a fall of many variables (F-static, the W of shapiro test and R^2)
+
+######################################################################
+
 #Linear model predicting Ladder score
 model1Free <- lm(Ladder.score ~ Density..P.Km2. + Agricultural.Land.... + Land.Area.Km2. + Armed.Forces.size + Birth.Rate +
                     Calling.Code + Co2.Emissions + CPI + CPI.Change.... + Fertility.Rate +
@@ -563,103 +663,7 @@ summary(model_clean)
 summary(model6Free)
 
                      
-###################################################################
-#We choose Bith.Rate as the variable to predict because we did Minimum.wage and 
-#followed a non-linear regression impossible to correct it with log()
-modeltristeza <- lm(Birth.Rate ~ Density..P.Km2. + Agricultural.Land.... + Land.Area.Km2. + CPI +
-                      Calling.Code + Life.expectancy + GDP + CPI.Change.... + Fertility.Rate +
-                      Forested.Area.... + Gasoline.Price + Unemployment.rate + Gross.primary.education.enrollment.... +
-                      Gross.tertiary.education.enrollment.... + Infant.mortality + Minimum.wage +
-                      Maternal.mortality.ratio + Armed.Forces.size + Out.of.pocket.health.expenditure +
-                      Physicians.per.thousand + Co2.Emissions + Population..Labor.force.participation.... +
-                      Tax.revenue.... + Total.tax.rate + Urban_population + Population + Latitude +
-                      Longitude, data = shrek, na.action = na.omit)
-summary(modeltristeza)
-#We remove the ones that didn't make sense with Birth.Rate and the ones that weren't related(high p-value)
-model2tristeza <- lm(Birth.Rate ~ Unemployment.rate + Gross.primary.education.enrollment.... +
-                       Gross.tertiary.education.enrollment....  + Maternal.mortality.ratio + Out.of.pocket.health.expenditure +
-                       Physicians.per.thousand, data = shrek, na.action = na.omit)
-summary(model2tristeza)
-#The final stage of this model has all the related variables for Birth.Rate
-model3tristeza <- lm(Birth.Rate ~ Gross.tertiary.education.enrollment....  
-                     + Maternal.mortality.ratio + Physicians.per.thousand, data = shrek, na.action = na.omit)
-summary(model3tristeza)
-
-#Comparison of models
-#anova(model3tristeza, model2tristeza)
-
-#confidence 
-confint(model3tristeza)
-confint(model3tristeza, level = 0.99)
-
-# Train the data with the 80%
-model_train2 <- lm(Birth.Rate ~ Gross.tertiary.education.enrollment....  
-                   + Maternal.mortality.ratio + Physicians.per.thousand,
-                   data = train_data, na.action = na.omit)
-summary(model_train2)
-
-prediction_confidence <- predict(model_train2, newdata = test_data, interval = "confidence")
-predictionx2 <- predict(model_train2, newdata = test_data, interval = "prediction")
-head(prediction_confidence)
-head(predictionx2)
-
-#Residual Plot
-residuals_clean <- na.omit(model_train2$residuals)
-
-#Residuals vs. Observations Plot
-plot(residuals_clean, type = "o", main="Residuals vs. Observation Order",
-     xlab="Observations", ylab="Residuals", col="green")
-
-abline(h=0, col="black", lwd=2, lty=2)
-
-plot(model3tristeza, 1)
-#The residuals vs. fitted values plot shows a curved pattern, suggesting non-linearity in the model. 
-#Applying a log transformation to the predictors could help straighten the trend, 
-#stabilize variance, and improve the model fit
-
-model3tristezalog <- lm(Birth.Rate ~ log(Gross.tertiary.education.enrollment....)  
-                        + log(Maternal.mortality.ratio) +
-                          log(Physicians.per.thousand), data = train_data, na.action = na.omit)
-plot(model3tristezalog,1)
-#After applying the log transformation, the residuals now show a more random spread around zero, reducing 
-#the previous curve, this suggests that the transformation improved the linearity and model fit
-
-
-#This graph helps visualize the distribution of the residuals
-#The red line shows the remaining patterns, while the dashed blue 
-#quantile lines show how they spread out from the residuals,
-#in this case it's possible to note a minor decrease in variance,
-#so isn't enough to confirm heteroscedasticity
-ggplot(data = data.frame(Fitted = model3tristezalog$fitted.values, Residuals = model3tristezalog$residuals), 
-       aes(x = Fitted, y = Residuals)) +
-  geom_point(alpha = 0.3, color = "black") +
-  geom_smooth(color = "red") +
-  geom_quantile(quantiles = c(0.05, 0.95), color = "blue", linetype = "dashed") +
-  labs(title = "Residuals vs Fitted Values",
-       x = "Fitted Values",
-       y = "Residuals")
-#We are going to verify if the model follows a normal distribution
-shapiro.test(model3tristezalog$residuals)
-plot(model3tristezalog,2)
-#The residuals are not perfectly normal, but the residuals approximate a normal distribution 
-#at the center
-
-stud_resids2 <- studres(model3tristezalog)
-
-plot(model3tristezalog$fitted.values,stud_resids2,
-     xlab="Fitted", ylab ="Studentized Residuals")
-abline (0 , 0)
-outliers <- ifelse(abs(stud_resids2) > 3, TRUE, FALSE)
-#The outlier is the oberserved value 172
-model_clean2 <- update(model3tristezalog, subset = !outliers)
-summary(model_clean2)
-summary(model3tristezalog)
-plot(model_clean2, 2)
-shapiro.test(model_clean2$residuals)
-plot(model_clean2, 1)
-#We have appreciate that it's no worth it to remove the outlier because we suffer
-#a fall of many variables (F-static, the W of shapiro test and R^2)
-
+                     
 ##### LOGISTIC REGRESSION
 
 fiona <- dragona
