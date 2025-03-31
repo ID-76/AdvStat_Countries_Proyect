@@ -496,7 +496,6 @@ head(predictionx2)
 #Residual Plot
 residuals_clean <- na.omit(model_train2$residuals)
 
-<<<<<<< Updated upstream
 #Residuals vs. Observations Plot
 plot(residuals_clean, type = "o", main="Residuals vs. Observation Order",
      xlab="Observations", ylab="Residuals", col="green")
@@ -539,13 +538,26 @@ ggplot(data = data.frame(Fitted = model3tristezalog$fitted.values, Residuals = m
        x = "Fitted Values",
        y = "Residuals")
 #We are going to verify if the model follows a normal distribution
-shapiro.test(model3tristezalog)
-plot(model3tristezalog)
+shapiro.test(model3tristezalog$residuals)
+plot(model3tristezalog,2)
 #The residuals are not perfectly normal, but the residuals approximate a normal distribution 
 #at the center
 
+stud_resids2 <- studres(model3tristezalog)
 
-
+plot(model3tristezalog$fitted.values,stud_resids2,
+     xlab="Fitted", ylab ="Studentized Residuals")
+abline (0 , 0)
+outliers <- ifelse(abs(stud_resids2) > 3, TRUE, FALSE)
+#The outlier is the oberserved value 172
+model_clean2 <- update(model3tristezalog, subset = -outliers)
+summary(model_clean2)
+summary(model3tristezalog)
+plot(model_clean2, 2)
+shapiro.test(model_clean2$residuals)
+plot(model_clean2, 1)
+#We have appreciate that it's no worth it to remove the outlier because we suffer
+#a fall of many variables (F-static, the W of shapiro test and R^2)
 
 ##### LOGISTIC REGRESSION
 
