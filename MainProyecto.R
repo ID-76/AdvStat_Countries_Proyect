@@ -404,6 +404,7 @@ model4Life<-lm(Life.expectancy ~ Density..P.Km2. + Infant.mortality + Minimum.wa
 summary(model4Life)
 confint(model4Life)
 
+#We split the data in two, one for training and the other for testing
 n <- nrow(shrek)
 train_ids <- sample(1:n, size = 0.8 * n)
 train_data <- shrek[train_ids, ]
@@ -440,6 +441,7 @@ ggplot(data = data.frame(Fitted = model4Life$fitted.values, Residuals = model4Li
 shapiro.test(model4Life$residuals)
 plot(model4Life,2)
 
+#We studentized the resiudals so we can indentify clearly the outliers
 stud_resids <- studres(model4Life)
 
 plot(model4Life$fitted.values,stud_resids,
