@@ -512,6 +512,31 @@ plot(model3tristeza, 1)
 #Applying a log transformation to the predictors could help straighten the trend, 
 #stabilize variance, and improve the model fit
 
+model3tristezalog <- lm(Birth.Rate ~ log(Gross.tertiary.education.enrollment....)  
+                        + log(Maternal.mortality.ratio) +
+                          log(Physicians.per.thousand), data = train_data, na.action = na.omit)
+plot(model3tristezalog,1)
+#After applying the log transformation, the residuals now show a more random spread around zero, reducing 
+#the previous curve, this suggests that the transformation improved the linearity and model fit
+
+
+#This graph helps visualize the distribution of the residuals
+#The red line shows the remaining patterns, while the dashed blue 
+#quantile lines show how they spread out from the residuals,
+#in this case it's possible to note a minor decrease in variance,
+#so is enough to confirm heteroscedasticity
+ggplot(data = data.frame(Fitted = model3tristezalog$fitted.values, Residuals = model3tristezalog$residuals), 
+       aes(x = Fitted, y = Residuals)) +
+  geom_point(alpha = 0.3, color = "black") +
+  geom_smooth(color = "red") +
+  geom_quantile(quantiles = c(0.05, 0.95), color = "blue", linetype = "dashed") +
+  labs(title = "Residuals vs Fitted Values",
+       x = "Fitted Values",
+       y = "Residuals")
+
+
+
+
 ##### LOGISTIC REGRESSION
 
 fiona <- dragona
