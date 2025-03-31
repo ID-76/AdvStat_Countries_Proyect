@@ -389,7 +389,7 @@ model3Life<- lm(Life.expectancy ~ Density..P.Km2. + Infant.mortality +
                   Maternal.mortality.ratio + Minimum.wage, data = shrek, na.action = na.omit)
 summary(model3Life)
 
-#We consider that the model3, compared with the model2, predicts enough better to let the predictor "longitud" in the model
+#We consider that the model3, compared with the model2, it predicts enough better to let the predictor "longitud" in the model
 anova(model3Life, model2Life)
 
 cor(shrek$Infant.mortality, shrek$Maternal.mortality.ratio, use = "complete.obs")
