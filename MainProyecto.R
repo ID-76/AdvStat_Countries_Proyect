@@ -744,3 +744,43 @@ plot(roc_curve, col="blue", main="ROC Curve")
 auc_value <- auc(roc_curve)
 cat("AUC:", auc_value, "\n")
 
+#############################################################################################
+head(dragona)
+hist(dragona$Life.expectancy, breaks = 100, main = "Distribución Life expectancy", xlab = "Life expectancy", col = "lightblue")
+
+quantile(dragona$Life.expectancy, probs = c(0, 1/3, 2/3, 1), na.rm = TRUE)
+# Low = Life.expectancy < 70
+# 
+# Medium = Life.expectancy 70–79
+# 
+# High = Life.expectancy > 79
+
+# Looking at the histogram we have decided to cut like this, because we see clearly different groups.
+dragona$LifeExp.Category <- cut(dragona$Life.expectancy,
+                                breaks = c(-Inf, 70, 79, Inf),
+                                labels = c("Low", "Medium", "High"),
+                                right = FALSE)
+
+table(dragona$LifeExp.Category)
+# Here we got the results of how many countries belongs to each category.
+
+contingency_table <- table(dragona$Regional.indicator, dragona$LifeExp.Category)
+
+print(contingency_table)
+
+# We can suspect that are regions that has lots of countries in one category 
+# which could mean that the contigency table is dependent.
+
+# Test chi-square to obtain the independence table
+chi_result <- chisq.test(contingency_table)
+
+expected_table <- chi_result$expected
+
+print(expected_table)
+
+# This table show to us what would happend if the variables were not related. 
+# The comparation:
+
+observed <- contingency_table
+expected <- chi_result$expected
+round(observed - expected, 1) 
