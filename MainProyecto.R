@@ -9,6 +9,7 @@ library(MASS)
 library(dplyr)
 library(caret)
 library(pROC)
+library(ca)
 
 
 setwd(dirname(getActiveDocumentContext()$path))
@@ -783,4 +784,26 @@ print(expected_table)
 
 observed <- contingency_table
 expected <- chi_result$expected
-round(observed - expected, 1) 
+round(observed - expected, 1)
+
+#Seeing the comparison between the contingency and independence tables
+#we can conclude that is a clear dependence. 
+#Specifically in the Sub-Saharan African region are much more 
+#countries with low life expectancy  (+22.0) than they would be if they were independent. 
+#On the other hand, the opposite happens with the Western Europe Region, 
+#were is much more high life expectancy (+14.9) than it should.
+
+chi_result
+
+#The low p-value show us that it is a extremly 
+#high correlation between regional indicator and the life expectancy
+
+caLR <- ca(contingency_table)
+
+plot(caLR, invisible =" col ")
+plot(caLR, invisible =" row ")
+
+#We plot row and column profiles on the plane defined by the eigenvectors, 
+#so we can see how the categories are reñated between
+summary(caLR)
+
