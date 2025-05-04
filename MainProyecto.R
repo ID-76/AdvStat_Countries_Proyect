@@ -856,7 +856,7 @@ plot(caLR, invisible =" col ")
 plot(caLR, invisible =" row ")
 
 #We plot row and column profiles on the plane defined by the eigenvectors, 
-#so we can see how the categories are reñated between
+#so we can see how the categories are related between
 summary(caLR)
 
 
