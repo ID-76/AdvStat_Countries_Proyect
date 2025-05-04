@@ -751,6 +751,7 @@ cat("AUC:", auc_value, "\n")
 ########PRINCIPAL COMPONENT ANALYSIS###################
 ## Data cleaning
 pca_data <- dragona[, c("Country",
+                        "Regional.indicator",
                         "Logged.GDP.per.capita", 
                         "Life.expectancy", 
                         "Freedom.to.make.life.choices", 
@@ -758,6 +759,7 @@ pca_data <- dragona[, c("Country",
                         "Perceptions.of.corruption", 
                         "Ladder.score", 
                         "Population")]
+names(pca_data)[names(pca_data) == "Regional.indicator"] <- "Region"
 names(pca_data)[names(pca_data) == "Logged.GDP.per.capita"] <- "GDP"
 names(pca_data)[names(pca_data) == "Life.expectancy"] <- "LifeExpectancy"
 names(pca_data)[names(pca_data) == "Freedom.to.make.life.choices"] <- "Freedom"
@@ -769,7 +771,73 @@ pca_data <- na.omit(pca_data)
 
 ## Data standardization
 countries <- pca_data$Country
-pca_num <- scale(pca_data[, -1])
+pca_num2 <- pca_data[, -1]
+pca_num <- scale(pca_num2[, -1])
+rownames(pca_num) <- countries
+
+rho <- cor(pca_num2[, -1])
+eig <- eigen(rho)
+eig$values
+sum(eig$values)
+tab <- cbind(eig$values,
+             eig$values/sum(eig$values),
+             cumsum(eig$values/sum(eig$values)))
+colnames(tab) = c("eigenvalue",
+                  "eigenvalue/sum(eigenvalues)",
+                  "cumul sum(eigenvalue/sum(eigenvalues))")
+tab
+
+coord <- t(solve(eig$vectors) %*% t(pca_num))
+
+correlations <- NULL
+correlations <- t(apply(pca_num, 2, function(col) cor(coord[, 1:2], col)))
+rownames(correlations) <- colnames(pca_num)
+correlations
+
+# We can now represent the correlations in a 2D circle.
+plot(correlations,xlim=c(-1,1),ylim=c(-1,1),pch=16,cex=0.3,
+     xlab="Component 1 (67,77%)",ylab="Component 2 (19,05%)",asp=1)
+draw.circle(0,0,radius=1)
+arrows(x0 = 0,y0 = 0,x1 = correlations[,1],y1=correlations[,2],length=0.1)
+abline(h=0,v=0,lty=2)
+text(correlations[,1]+0.1,correlations[,2]+0.1,labels = row.names(correlations),cex=1)
+
+
+
+
+#Create a color mapping
+region_colors <- c("Western Europe" = "lightblue", "North America and ANZ" = "red", 
+                   "Middle East and North Africa" = "orange", "Latin America and Caribbean" = "gold", 
+                   "Central and Eastern Europe" = "darkblue", "East Asia" = "hotpink",
+                   "Southeast Asia" = "darkgreen", "Commonwealth of Independent States" = "grey",
+                   "Sub-Saharan Africa" = "beige", "South Asia"  = "lightgreen") 
+
+# Determine the colors for each point based on the 'country_region'
+point_colors <- region_colors[pca_data$Region]
+
+
+
+plot(correlations, xlim = c(-3, 3), ylim = c(-2, 2), pch = 16, cex = 0.3,
+     xlab = "Component 1 (67.77%)", ylab = "Component 2 (19.05%)", asp = 1)
+draw.circle(0, 0, radius = 1)
+arrows(x0 = 0, y0 = 0, x1 = correlations[, 1], y1 = correlations[, 2], length = 0.1)
+abline(h = 0, v = 0, lty = 2)
+text(correlations[, 1] + 0.1, correlations[, 2] + 0.1, 
+     labels = row.names(correlations), cex = 0.6)
+
+# Overlay the scatter plot of individual data points
+points(coord[, 1], coord[, 2], pch = 16, col = point_colors)
+text(coord[, 1], coord[, 2] + 0.4, labels = rownames(pca_num), cex = 0.8)
+abline(h = 0, v = 0, lty = 2, col = "lightgray")
+title(main = "PCA Analysis: Individuals and Vectors")
+
+legend(x = -4, y = 2.474, 
+       legend = names(region_colors), 
+       fill = region_colors, 
+       title = "Regions", 
+       cex = 0.5, 
+       text.font = 75,
+       bty = "n")
 
 ##
 pca_result <- PCA(pca_num, scale.unit = FALSE, graph = FALSE)
@@ -810,9 +878,9 @@ quantile(dragona2$Life.expectancy, probs = c(0, 1/3, 2/3, 1), na.rm = TRUE)
 
 # Looking at the histogram we have decided to cut like this, because we see clearly different groups.
 dragona2$LifeExp.Category <- cut(dragona2$Life.expectancy,
-                                breaks = c(-Inf, 70, 79, Inf),
-                                labels = c("Low", "Medium", "High"),
-                                right = FALSE)
+                                 breaks = c(-Inf, 70, 79, Inf),
+                                 labels = c("Low", "Medium", "High"),
+                                 right = FALSE)
 
 table(dragona2$LifeExp.Category)
 # Here we got the results of how many countries belongs to each category.
