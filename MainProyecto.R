@@ -777,8 +777,6 @@ pca_num <- scale(pca_num2[, -1])
 rownames(pca_num) <- countries
 
 
-## PCA
-pca_values <- PCA(pca_num2[, -1])
 
 
 ## EIGENVALUES
@@ -788,10 +786,11 @@ pca_rho <- cor(pca_num2[, -1])
 pca_eig <- eigen(pca_rho)
 pca_coord <- t(solve(pca_eig$vectors) %*% t(pca_num))
 
+t(apply(pca_num, 2, function(col) cor(pca_coord, col)))
+
 pca_correlations <- NULL
 pca_correlations <- t(apply(pca_num, 2, function(col) cor(pca_coord[, 1:2], col)))
 rownames(pca_correlations) <- colnames(pca_num)
-pca_correlations
 
 
 
