@@ -1,18 +1,22 @@
 #Proyecto AdvStat
 # Tip: Use the down arrow (v) besides the line number to collapse sections for a better experience
-library(tidyverse)
-library(ggplot2)
-library(rstudioapi)
-library(glue)
-library(stringdist)
-library(MASS)
-library(dplyr)
-library(caret)
-library(pROC)
-library(ca)
-library(FactoMineR)
-library(factoextra)
-library(plotrix)
+# List of required packages
+packages <- c(
+  "tidyverse", "ggplot2", "rstudioapi", "glue", "stringdist", "MASS",
+  "dplyr", "caret", "pROC", "ca", "FactoMineR", "factoextra", "plotrix"
+)
+
+# Function to install missing packages and load all
+install_and_load <- function(pkg) {
+  if (!require(pkg, character.only = TRUE)) {
+    install.packages(pkg, dependencies = TRUE)
+    library(pkg, character.only = TRUE)
+  } else {
+    library(pkg, character.only = TRUE)
+  }
+}
+
+invisible(lapply(packages, install_and_load))
 
 
 setwd(dirname(getActiveDocumentContext()$path))
@@ -780,6 +784,7 @@ rownames(pca_num) <- countries
 
 
 ## EIGENVALUES
+pca_values <- PCA(pca_num2[, -1])
 pca_values$eig
 
 pca_rho <- cor(pca_num2[, -1])
@@ -958,16 +963,7 @@ for (i in seq_along(region_names)) {
 
 
 
-##
-pca_result <- PCA(pca_num, scale.unit = FALSE, graph = FALSE)
-summary(pca_result)
-# We can see that the first 3 dimensions account for 79% of the variance
 
-## Scree Plot
-fviz_eig(pca_result, 
-         addlabels = TRUE,
-         ylim = c(0, 50)) 
-## As we already said, the elbow is around the 3 component
 
 
 ########CORRESPONDENCE ANALYSIS#######################################################
@@ -984,9 +980,9 @@ quantile(dragona2$Life.expectancy, probs = c(0, 1/3, 2/3, 1), na.rm = TRUE)
 
 # Looking at the histogram we have decided to cut like this, because we see clearly different groups.
 dragona2$LifeExp.Category <- cut(dragona2$Life.expectancy,
-                                 breaks = c(-Inf, 70, 79, Inf),
-                                 labels = c("Low", "Medium", "High"),
-                                 right = FALSE)
+                                breaks = c(-Inf, 70, 79, Inf),
+                                labels = c("Low", "Medium", "High"),
+                                right = FALSE)
 
 table(dragona2$LifeExp.Category)
 # Here we got the results of how many countries belongs to each category.
@@ -1026,13 +1022,12 @@ chi_result
 
 caLR <- ca(contingency_table)
 
+
 plot(caLR, invisible =" col ")
-plot(caLR, invisible =" row ")
+
+
 
 #We plot row and column profiles on the plane defined by the eigenvectors, 
-#so we can see how the categories are related between
+#so we can see how the categories are reñated between
 summary(caLR)
-
-
-print(asno)
 
