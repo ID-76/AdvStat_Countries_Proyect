@@ -12,6 +12,7 @@ library(pROC)
 library(ca)
 library(FactoMineR)
 library(factoextra)
+library(plotrix)
 
 
 setwd(dirname(getActiveDocumentContext()$path))
@@ -775,69 +776,188 @@ pca_num2 <- pca_data[, -1]
 pca_num <- scale(pca_num2[, -1])
 rownames(pca_num) <- countries
 
-rho <- cor(pca_num2[, -1])
-eig <- eigen(rho)
-eig$values
-sum(eig$values)
-tab <- cbind(eig$values,
-             eig$values/sum(eig$values),
-             cumsum(eig$values/sum(eig$values)))
-colnames(tab) = c("eigenvalue",
-                  "eigenvalue/sum(eigenvalues)",
-                  "cumul sum(eigenvalue/sum(eigenvalues))")
-tab
 
-coord <- t(solve(eig$vectors) %*% t(pca_num))
+## PCA
+pca_values <- PCA(pca_num2[, -1])
 
-correlations <- NULL
-correlations <- t(apply(pca_num, 2, function(col) cor(coord[, 1:2], col)))
-rownames(correlations) <- colnames(pca_num)
-correlations
+
+## EIGENVALUES
+pca_values$eig
+
+pca_rho <- cor(pca_num2[, -1])
+pca_eig <- eigen(pca_rho)
+pca_coord <- t(solve(pca_eig$vectors) %*% t(pca_num))
+
+pca_correlations <- NULL
+pca_correlations <- t(apply(pca_num, 2, function(col) cor(pca_coord[, 1:2], col)))
+rownames(pca_correlations) <- colnames(pca_num)
+pca_correlations
+
+
 
 # We can now represent the correlations in a 2D circle.
-plot(correlations,xlim=c(-1,1),ylim=c(-1,1),pch=16,cex=0.3,
-     xlab="Component 1 (67,77%)",ylab="Component 2 (19,05%)",asp=1)
-draw.circle(0,0,radius=1)
-arrows(x0 = 0,y0 = 0,x1 = correlations[,1],y1=correlations[,2],length=0.1)
-abline(h=0,v=0,lty=2)
-text(correlations[,1]+0.1,correlations[,2]+0.1,labels = row.names(correlations),cex=1)
-
-
-
-
-#Create a color mapping
-region_colors <- c("Western Europe" = "lightblue", "North America and ANZ" = "red", 
-                   "Middle East and North Africa" = "orange", "Latin America and Caribbean" = "gold", 
-                   "Central and Eastern Europe" = "darkblue", "East Asia" = "hotpink",
-                   "Southeast Asia" = "darkgreen", "Commonwealth of Independent States" = "grey",
-                   "Sub-Saharan Africa" = "beige", "South Asia"  = "lightgreen") 
-
-# Determine the colors for each point based on the 'country_region'
-point_colors <- region_colors[pca_data$Region]
-
-
-
-plot(correlations, xlim = c(-3, 3), ylim = c(-2, 2), pch = 16, cex = 0.3,
-     xlab = "Component 1 (67.77%)", ylab = "Component 2 (19.05%)", asp = 1)
+plot(pca_correlations,xlim=c(-1.5,1.5),ylim=c(-1.5,1.5),pch=16,cex=0.3,
+     xlab="Component 1 (46,12%)",ylab="Component 2 (18,71%)",asp=1)
+grid()
 draw.circle(0, 0, radius = 1)
-arrows(x0 = 0, y0 = 0, x1 = correlations[, 1], y1 = correlations[, 2], length = 0.1)
+arrows(x0 = 0, y0 = 0, 
+       x1 = pca_correlations[, 1], 
+       y1 = pca_correlations[, 2], 
+       length = 0.1,
+       lwd = 2)
 abline(h = 0, v = 0, lty = 2)
-text(correlations[, 1] + 0.1, correlations[, 2] + 0.1, 
-     labels = row.names(correlations), cex = 0.6)
+
+# LABEL PLACEMENT
+x_offset <- ifelse(pca_correlations[, 1] >= 0, 0.15, -0.5)
+y_offset <- ifelse(pca_correlations[, 2] >= 0, 0.15, -0.15)
+
+y_offset["GDP"] <- y_offset["GDP"] + 0.1               # move GDP up
+y_offset["LifeExpectancy"] <- y_offset["LifeExpectancy"] - 0.125  # move LifeExpectancy down
+y_offset["Happiness"] <- y_offset["Happiness"] - 0.13  # move happiness down
+x_offset["LifeExpectancy"] <- x_offset["LifeExpectancy"] - 0.125  # move LifeExpectancy left
+x_offset["GDP"] <- x_offset["GDP"] + 0.1                # move GDP right
+x_offset["Population"] <- x_offset["Population"] + 0.22  # move population right
+x_offset["Corruption"] <- x_offset["Corruption"] - 0.2  # move corruption left
+
+text(pca_correlations[, 1] + x_offset, 
+     pca_correlations[, 2] + y_offset, 
+     labels = row.names(pca_correlations), 
+     cex = 1.0,
+     font = 1
+)
+title(main = "PCA Analisys: Variables")
+
+
+
+##PCA with selected 20 countries
+selected_countries <- c("Finland", "New Zealand", "France", "Portugal", 
+                        "Belarus", "Yemen", "Spain", "Mexico", "Nigeria", "Nepal", 
+                        "Pakistan", "Zimbabwe", "Tunisia", "United States", "Cuba")
+
+pca_20 <- pca_data[pca_data$Country %in% selected_countries, ]
+pca_num_3 <- pca_20[, -1]
+pca_num_4 <- scale(pca_num_3[, -1])
+pca_coord_1 <- t(solve(pca_eig$vectors) %*% t(pca_num_4))
+rownames(pca_coord_1) <- pca_20$Country
+
+
+plot(pca_correlations, xlim = c(-3.5, 3.5), ylim = c(-2, 2), 
+     pch = 16, cex = 0.3, 
+     xlab = "Component 1 (46,12%)", ylab = "Component 2 (18,71%)", asp = 1)
+grid()
+draw.circle(0, 0, radius = 1)
+arrows(x0 = 0, y0 = 0, 
+       x1 = pca_correlations[, 1], 
+       y1 = pca_correlations[, 2], 
+       length = 0.1,
+       lwd = 2)
+abline(h = 0, v = 0, lty = 2)
+
+# LABEL PLACEMENT
+x_offset <- ifelse(pca_correlations[, 1] >= 0, 0.15, -0.5)
+y_offset <- ifelse(pca_correlations[, 2] >= 0, 0.15, -0.15)
+
+y_offset["GDP"] <- y_offset["GDP"] + 0.1               # move GDP up
+y_offset["LifeExpectancy"] <- y_offset["LifeExpectancy"] - 0.125  # move LifeExpectancy down
+y_offset["Happiness"] <- y_offset["Happiness"] - 0.13  # move happiness down
+x_offset["LifeExpectancy"] <- x_offset["LifeExpectancy"] - 0.125  # move LifeExpectancy left
+x_offset["GDP"] <- x_offset["GDP"] + 0.1                # move GDP right
+x_offset["Population"] <- x_offset["Population"] + 0.22  # move population right
+x_offset["Corruption"] <- x_offset["Corruption"] - 0.2  # move corruption left
+
+text(pca_correlations[, 1] + x_offset, 
+     pca_correlations[, 2] + y_offset, 
+     labels = row.names(pca_correlations), 
+     cex = 1.6,
+     font = 2
+     )
 
 # Overlay the scatter plot of individual data points
-points(coord[, 1], coord[, 2], pch = 16, col = point_colors)
-text(coord[, 1], coord[, 2] + 0.4, labels = rownames(pca_num), cex = 0.8)
-abline(h = 0, v = 0, lty = 2, col = "lightgray")
-title(main = "PCA Analysis: Individuals and Vectors")
+points(pca_coord_1[, 1], pca_coord_1[, 2], pch = 16, col = "blue", cex= 1.5)
+text(pca_coord_1[, 1] - 0.2, pca_coord_1[, 2] + 0.1, labels = rownames(pca_coord_1), cex = 1.6)
+title(main = "PCA Analysis: Selected 20 countries")
 
-legend(x = -4, y = 2.474, 
-       legend = names(region_colors), 
+
+
+
+
+##PCA WITH CATEGORICAL VARIABLE
+pca_data$Region[pca_data$Region == "Commonwealth of Independent States"] <- "Former Soviet countries"
+
+region_colors <- c("Western Europe" = "blue", "North America and ANZ" = "red", 
+                   "Middle East and North Africa" = "black", "Latin America and Caribbean" = "orange", 
+                   "Central and Eastern Europe" = "green", "East Asia" = "hotpink",
+                   "Southeast Asia" = "purple", "Former Soviet countries" = "grey",
+                   "Sub-Saharan Africa" = "brown", "South Asia"  = "yellow") 
+point_colors <- region_colors[pca_data$Region]
+
+region_icons <- c("Western Europe" = 15, "North America and ANZ" = 23, 
+                   "Middle East and North Africa" = 16, "Latin America and Caribbean" = 23, 
+                   "Central and Eastern Europe" = 15, "East Asia" = 17,
+                   "Southeast Asia" = 17, "Former Soviet countries" = 8,
+                   "Sub-Saharan Africa" = 16, "South Asia"  = 17) 
+point_icons <- region_icons[pca_data$Region]
+
+
+# DUALITY #
+# Create the scatter plot with vectors
+plot(pca_correlations, xlim = c(-3.5, 3.5), ylim = c(-2, 2), pch = 16, cex = 0.3,
+     xlab = "Component 1 (46,12%)",ylab="Component 2 (18,71%)", asp = 1)
+draw.circle(0, 0, radius = 1)
+arrows(x0 = 0, y0 = 0, x1 = pca_correlations[, 1], y1 = pca_correlations[, 2], length = 0.1, lwd = 2.5)
+abline(h = 0, v = 0, lty = 2)
+# LABEL PLACEMENT
+x_offset <- ifelse(pca_correlations[, 1] >= 0, 0.15, -0.5)
+y_offset <- ifelse(pca_correlations[, 2] >= 0, 0.15, -0.15)
+
+y_offset["GDP"] <- y_offset["GDP"] + 0.1               # move GDP up
+y_offset["LifeExpectancy"] <- y_offset["LifeExpectancy"] - 0.125  # move LifeExpectancy down
+y_offset["Happiness"] <- y_offset["Happiness"] - 0.13  # move happiness down
+x_offset["LifeExpectancy"] <- x_offset["LifeExpectancy"] - 0.125  # move LifeExpectancy left
+x_offset["GDP"] <- x_offset["GDP"] + 0.1                # move GDP right
+x_offset["Population"] <- x_offset["Population"] + 0.22  # move population right
+x_offset["Corruption"] <- x_offset["Corruption"] - 0.2  # move corruption left
+
+text(pca_correlations[, 1] + x_offset, 
+     pca_correlations[, 2] + y_offset, 
+     labels = row.names(pca_correlations), 
+     cex = 1.6,
+     font = 2
+)
+
+# Overlay the scatter plot of individual data points
+points(pca_coord[, 1], pca_coord[, 2], pch = point_icons, col = point_colors, bg = point_colors, cex = 1.4)
+text(pca_coord[, 1], pca_coord[, 2] + 0.08, labels = rownames(pca_num), cex = 0.6)
+title(main = "PCA Analysis: 140 countries")
+
+# 1. Draw legend with fill only, no labels
+legend(x = -4.1, y = 2.27, 
+       legend = rep("", length(region_colors)),  # No text
        fill = region_colors, 
-       title = "Regions", 
-       cex = 0.5, 
-       text.font = 75,
+       title = NULL, 
+       cex = 0.6, 
+       y.intersp = 0.7,
        bty = "n")
+
+# 2. Manually add text with more control
+legend_coords <- cbind(
+  x = rep(-3.65, length(region_colors)),          # Adjust X position as needed
+  y = seq(2.035, 2.4 - 0.6 * (length(region_colors) - 1), by = -0.1926)  # Y positions match y.intersp
+)
+
+region_names <- names(region_colors)
+
+# Loop to place each label
+for (i in seq_along(region_names)) {
+  text(x = legend_coords[i, 1], 
+       y = legend_coords[i, 2], 
+       labels = region_names[i], 
+       cex = 1.0,              # Bigger text
+       font = 2,               # Bold
+       adj = 0)                # Left-aligned
+}
+
+
 
 ##
 pca_result <- PCA(pca_num, scale.unit = FALSE, graph = FALSE)
@@ -849,19 +969,6 @@ fviz_eig(pca_result,
          addlabels = TRUE,
          ylim = c(0, 50)) 
 ## As we already said, the elbow is around the 3 component
-
-fviz_pca_ind(pca_result,
-             col.ind = "cos2", # Color by quality of representation
-             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-             repel = TRUE)
-fviz_pca_ind(pca_result,
-             col.ind = "cos2", # Color by quality of representation
-             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-             repel = TRUE)
-fviz_pca_biplot(pca_result,
-                repel = TRUE,
-                col.var = "#2E9FDF", 
-                col.ind = "#696969")
 
 
 ########CORRESPONDENCE ANALYSIS#######################################################
