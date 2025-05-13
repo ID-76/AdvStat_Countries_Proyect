@@ -1033,23 +1033,24 @@ summary(caLR)
 
 ############## K-MEANS CLUSTERING ###################
 
-# Usamos los primeros componentes del PCA (ya estandarizados)
-# Tomaremos las 3 primeras dimensiones, que explican cerca del 79% de la varianza
+#We are going to use the PCA of the delivery4, 
+#just choosing the 3 dimensions that represent the 79%
 pca_coords <- pca_result$ind$coord[, 1:3]
 
-# Determinación del número óptimo de clusters
-# Método del codo (WSS)
+# We first have try to find the optimal number of clusters with the elbow plot
 fviz_nbclust(pca_coords, kmeans, method = "wss") +
-  geom_vline(xintercept = 3, linetype = 2) +
+  geom_vline(xintercept = 2, linetype = 2) +
+  geom_vline(xintercept = 5, linetype = 2)+
   labs(subtitle = "Elbow Method")
 
-# Método del silhouette
+#As we were doubting between two nunbers, we have decided to make the silhouette method
 fviz_nbclust(pca_coords, kmeans, method = "silhouette") +
+  geom_vline(xintercept = 3, linetype = 2) +
   labs(subtitle = "Silhouette Method")
 
 # Elegimos 3 clusters basado en los métodos anteriores
 set.seed(123)
-km_res <- kmeans(pca_coords, centers = 6, nstart = 25)
+km_res <- kmeans(pca_coords, centers = 4, nstart = 25)
 
 # Visualización de los clusters sobre los componentes principales
 fviz_cluster(km_res, data = pca_coords,
