@@ -1031,3 +1031,43 @@ plot(caLR, invisible =" col ")
 #so we can see how the categories are reñated between
 summary(caLR)
 
+############## K-MEANS CLUSTERING ###################
+
+# Usamos los primeros componentes del PCA (ya estandarizados)
+# Tomaremos las 3 primeras dimensiones, que explican cerca del 79% de la varianza
+pca_coords <- pca_result$ind$coord[, 1:3]
+
+# Determinación del número óptimo de clusters
+# Método del codo (WSS)
+fviz_nbclust(pca_coords, kmeans, method = "wss") +
+  geom_vline(xintercept = 3, linetype = 2) +
+  labs(subtitle = "Elbow Method")
+
+# Método del silhouette
+fviz_nbclust(pca_coords, kmeans, method = "silhouette") +
+  labs(subtitle = "Silhouette Method")
+
+# Elegimos 3 clusters basado en los métodos anteriores
+set.seed(123)
+km_res <- kmeans(pca_coords, centers = 6, nstart = 25)
+
+# Visualización de los clusters sobre los componentes principales
+fviz_cluster(km_res, data = pca_coords,
+             geom = "point",
+             ellipse.type = "norm",
+             main = "K-means clustering sobre los primeros 3 componentes PCA") +
+  theme_minimal()
+
+# Añadir la información de cluster al dataframe original
+pca_data$Cluster <- factor(km_res$cluster)
+
+# Visualización por región y cluster
+ggplot(pca_data, aes(x = GDP, y = LifeExpectancy, color = Cluster)) +
+  geom_point(size = 3, alpha = 0.7) +
+  theme_minimal() +
+  labs(title = "Clusterización de países según GDP y esperanza de vida",
+       x = "GDP (log)", y = "Esperanza de vida")
+
+# Tabla de resumen por cluster
+aggregate(pca_data[, c("GDP", "LifeExpectancy", "Freedom", "Happiness")],
+          by = list(Cluster = pca_data$Cluster), mean)
