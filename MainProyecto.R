@@ -1043,12 +1043,12 @@ fviz_nbclust(pca_coords, kmeans, method = "wss") +
   geom_vline(xintercept = 5, linetype = 2)+
   labs(subtitle = "Elbow Method")
 
-#As we were doubting between two nunbers, we have decided to make the silhouette method
+#As we were doubting between two numbers, we have decided to make the silhouette method
 fviz_nbclust(pca_coords, kmeans, method = "silhouette") +
-  geom_vline(xintercept = 3, linetype = 2) +
+  geom_vline(xintercept = 4, linetype = 2) +
   labs(subtitle = "Silhouette Method")
 
-# Elegimos 3 clusters basado en los métodos anteriores
+# Based on the Silhouette Method we conclude that the best number of clusters is 4
 set.seed(123)
 km_res <- kmeans(pca_coords, centers = 4, nstart = 25)
 
@@ -1056,7 +1056,7 @@ km_res <- kmeans(pca_coords, centers = 4, nstart = 25)
 fviz_cluster(km_res, data = pca_coords,
              geom = "point",
              ellipse.type = "norm",
-             main = "K-means clustering sobre los primeros 3 componentes PCA") +
+             main = "K-means clustering sobre los primeros 4 componentes PCA") +
   theme_minimal()
 
 # Añadir la información de cluster al dataframe original
