@@ -1035,7 +1035,7 @@ summary(caLR)
 
 #We are going to use the PCA of the delivery4, 
 #just choosing the 3 dimensions that represent the 79%
-pca_coords <- pca_result$ind$coord[, 1:3]
+pca_coords <- pca_values$ind$coord[, 1:3]
 
 # We first have try to find the optimal number of clusters with the elbow plot
 fviz_nbclust(pca_coords, kmeans, method = "wss") +
