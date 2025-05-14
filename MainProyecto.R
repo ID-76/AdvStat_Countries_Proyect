@@ -1072,3 +1072,18 @@ ggplot(pca_data, aes(x = GDP, y = LifeExpectancy, color = Cluster)) +
 # Tabla de resumen por cluster
 aggregate(pca_data[, c("GDP", "LifeExpectancy", "Freedom", "Happiness")],
           by = list(Cluster = pca_data$Cluster), mean)
+
+k <- 4
+km1 <- kmeans(pca_data, 
+                   k, 
+                   nstart = 1 # how many initial conditions are created
+) 
+
+#We plot the data, according to its cluster assignment, we will appreciate it by colours
+par(mfrow = c(2, 1))
+plot(pca_data, col = (km1$cluster + 1), ylim = c(-3,2),
+     main = paste("K-Means Clustering Results with K clusters = ", k, sep = " "),
+     xlab = "", ylab = "", pch = 20, cex = 2)
+
+q <- 4
+kmSlide <- kmeans(pca_values$ind$coord[ ,1:2], q, nstart = 20)
