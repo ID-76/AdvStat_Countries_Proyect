@@ -1033,8 +1033,8 @@ summary(caLR)
 
 ############## K-MEANS CLUSTERING ###################
 
-#We are going to use the PCA of the delivery4, 
-#just choosing the 3 dimensions that represent the 79%
+#We are going to use the PCA of the delivery3, 
+#just choosing the 2 dimensions that represent the 67%
 pca_coords1 <- pca_values$ind$coord[, 1:2]
 
 # We first have try to find the optimal number of clusters with the elbow plot
@@ -1066,3 +1066,49 @@ text(pca_coords1,
      labels = rownames(pca_num), 
      pos = 3,   
      cex = 0.6)  
+
+
+##### Hierarchical aglomerative clustering####
+pca_data_AHC <- pca_values$ind$coord[,1:2]
+rownames(pca_data_AHC) <- countries
+
+distance_matrix <- dist(pca_data_AHC, method = "manhattan")
+distance_matrix
+
+hc <-  hclust(distance_matrix, method = "complete")
+hc
+# We can plot the dendrogram
+plot(hc)
+
+
+# To determine the cluster for each observation associated 
+# with a given cut of the dendrogram, we can use the cutree() function.
+# If we want to cut horizontally:
+cutree(hc, h=2)  # setting the height
+# If we want to cut vertically:
+cutree(hc, k=5)  # setting the number of clusters
+
+
+# Elbow plot for hierarchical clustering
+fviz_nbclust(pca_data_AHC, hcut, method = "wss", k.max = 20)
+
+
+fviz_nbclust(pca_data_AHC, hcut, method = "silhouette", k.max = 20)
+
+
+hc_clusters <- cutree(hc, k = 4)  # or use h = some height
+
+k <-4 
+
+plot(pca_data_AHC, 
+     col = hc_clusters, 
+     main = "Hierarchical Clustering (k = 4)",
+     pch = 20, 
+     cex = 2)
+
+# Add country names
+text(pca_data_AHC, 
+     labels = rownames(pca_num), 
+     pos = 3, 
+     cex = 0.6)
+
