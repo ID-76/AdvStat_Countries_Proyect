@@ -1028,62 +1028,41 @@ plot(caLR, invisible =" col ")
 
 
 #We plot row and column profiles on the plane defined by the eigenvectors, 
-#so we can see how the categories are reñated between
+#so we can see how the categories are related between
 summary(caLR)
 
 ############## K-MEANS CLUSTERING ###################
 
 #We are going to use the PCA of the delivery4, 
 #just choosing the 3 dimensions that represent the 79%
-pca_coords <- pca_values$ind$coord[, 1:3]
+pca_coords1 <- pca_values$ind$coord[, 1:2]
 
 # We first have try to find the optimal number of clusters with the elbow plot
-fviz_nbclust(pca_coords, kmeans, method = "wss") +
+fviz_nbclust(pca_coords1, kmeans, method = "wss") +
   geom_vline(xintercept = 2, linetype = 2) +
   geom_vline(xintercept = 5, linetype = 2)+
   labs(subtitle = "Elbow Method")
 
 #As we were doubting between two numbers, we have decided to make the silhouette method
-fviz_nbclust(pca_coords, kmeans, method = "silhouette") +
+fviz_nbclust(pca_coords1, kmeans, method = "silhouette") +
   geom_vline(xintercept = 4, linetype = 2) +
   labs(subtitle = "Silhouette Method")
 
 # Based on the Silhouette Method we conclude that the best number of clusters is 4
 set.seed(123)
-km_res <- kmeans(pca_coords, centers = 4, nstart = 25)
-
-# Visualización de los clusters sobre los componentes principales
-fviz_cluster(km_res, data = pca_coords,
-             geom = "point",
-             ellipse.type = "norm",
-             main = "K-means clustering sobre los primeros 4 componentes PCA") +
-  theme_minimal()
-
-# Añadir la información de cluster al dataframe original
-pca_data$Cluster <- factor(km_res$cluster)
-
-# Visualización por región y cluster
-ggplot(pca_data, aes(x = GDP, y = LifeExpectancy, color = Cluster)) +
-  geom_point(size = 3, alpha = 0.7) +
-  theme_minimal() +
-  labs(title = "Clusterización de países según GDP y esperanza de vida",
-       x = "GDP (log)", y = "Esperanza de vida")
-
-# Tabla de resumen por cluster
-aggregate(pca_data[, c("GDP", "LifeExpectancy", "Freedom", "Happiness")],
-          by = list(Cluster = pca_data$Cluster), mean)
 
 k <- 4
-km1 <- kmeans(pca_data, 
+km.out_1 <- kmeans(pca_coords1, 
                    k, 
-                   nstart = 1 # how many initial conditions are created
+                   nstart = 10 # how many initial conditions are created
 ) 
 
-#We plot the data, according to its cluster assignment, we will appreciate it by colours
-par(mfrow = c(2, 1))
-plot(pca_data, col = (km1$cluster + 1), ylim = c(-3,2),
-     main = paste("K-Means Clustering Results with K clusters = ", k, sep = " "),
+par(mfrow = c(1, 1))
+plot(pca_coords1, col = (km.out_1$cluster + 1), 
+     main = paste("K-Means Clustering Results with K = ", k, sep = " "),
      xlab = "", ylab = "", pch = 20, cex = 2)
 
-q <- 4
-kmSlide <- kmeans(pca_values$ind$coord[ ,1:2], q, nstart = 20)
+text(pca_coords1, 
+     labels = rownames(pca_num), 
+     pos = 3,   
+     cex = 0.6)  
