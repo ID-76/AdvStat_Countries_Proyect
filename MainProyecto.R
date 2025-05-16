@@ -3,7 +3,7 @@
 # List of required packages
 packages <- c(
   "tidyverse", "ggplot2", "rstudioapi", "glue", "stringdist", "MASS",
-  "dplyr", "caret", "pROC", "ca", "FactoMineR", "factoextra", "plotrix"
+  "dplyr", "caret", "pROC", "ca", "FactoMineR", "factoextra", "plotrix","scico"
 )
 
 # Function to install missing packages and load all
@@ -1040,7 +1040,7 @@ pca_coords1 <- pca_values$ind$coord[, 1:2]
 # We first have try to find the optimal number of clusters with the elbow plot
 fviz_nbclust(pca_coords1, kmeans, method = "wss") +
   geom_vline(xintercept = 2, linetype = 2) +
-  geom_vline(xintercept = 5, linetype = 2)+
+  geom_vline(xintercept = 4, linetype = 2)+
   labs(subtitle = "Elbow Method")
 
 #As we were doubting between two numbers, we have decided to make the silhouette method
@@ -1067,6 +1067,25 @@ text(pca_coords1,
      pos = 3,   
      cex = 0.6)  
 
+pca_data$cluster <- as.factor(km.out_1$cluster)
+
+pca_data %>%
+  group_by(cluster) %>%
+  summarise(across(where(is.numeric), mean))
+
+data_long <- pca_data %>%
+  pivot_longer(cols = -c(cluster,Country,Region), names_to = "variable", values_to = "value")
+
+cluster_colors <- scico(4, palette = "lajolla")
+
+ggplot(data_long, aes(x = cluster, y = value, fill = cluster)) +
+  geom_violin(trim = FALSE, alpha = 0.75) +
+  facet_wrap(~variable, scales = "free", ncol = 4) +
+  scale_fill_manual(values = cluster_colors) +
+  theme_minimal() +
+  labs(x = "Cluster", y = "", title = "Distribution of Variables per Cluster") +
+  theme(legend.position = "none",
+        strip.text = element_text(face = "bold"))
 
 ##### Hierarchical aglomerative clustering####
 pca_data_AHC <- pca_values$ind$coord[,1:2]
