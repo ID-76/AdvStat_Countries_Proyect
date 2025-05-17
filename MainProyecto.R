@@ -1091,33 +1091,37 @@ ggplot(data_long, aes(x = cluster, y = value, fill = cluster)) +
 pca_data_AHC <- pca_values$ind$coord[,1:2]
 rownames(pca_data_AHC) <- countries
 
-distance_matrix <- dist(pca_data_AHC, method = "manhattan")
+distance_matrix <- dist(pca_data_AHC, method = "euclidean")
 distance_matrix
 
 hc <-  hclust(distance_matrix, method = "complete")
 hc
 # We can plot the dendrogram
-plot(hc)
-
-
-# To determine the cluster for each observation associated 
-# with a given cut of the dendrogram, we can use the cutree() function.
-# If we want to cut horizontally:
-cutree(hc, h=2)  # setting the height
-# If we want to cut vertically:
-cutree(hc, k=5)  # setting the number of clusters
+plot(hc, cex=0.7)
 
 
 # Elbow plot for hierarchical clustering
 fviz_nbclust(pca_data_AHC, hcut, method = "wss", k.max = 20)
 
-
 fviz_nbclust(pca_data_AHC, hcut, method = "silhouette", k.max = 20)
 
 
+# To determine the cluster for each observation associated 
+# with a given cut of the dendrogram, we can use the cutree() function.
+k <- 4 
 hc_clusters <- cutree(hc, k = 4)  # or use h = some height
 
-k <-4 
+
+##PROVISIONAL
+
+# Set point shapes for each cluster 
+#cluster_shapes <- c(15, 16, 17, 18)  # square, circle, triangle, diamond
+#point_shapes <- cluster_shapes[hc_clusters]
+
+# Set colors based on regions
+#point_colors <- region_colors[region_vector[rownames(pca_data_AHC)]]
+
+##
 
 plot(pca_data_AHC, 
      col = hc_clusters, 
