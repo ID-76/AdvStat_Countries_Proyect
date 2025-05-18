@@ -1112,16 +1112,6 @@ k <- 4
 hc_clusters <- cutree(hc, k = 4)  # or use h = some height
 
 
-##PROVISIONAL
-
-# Set point shapes for each cluster 
-#cluster_shapes <- c(15, 16, 17, 18)  # square, circle, triangle, diamond
-#point_shapes <- cluster_shapes[hc_clusters]
-
-# Set colors based on regions
-#point_colors <- region_colors[region_vector[rownames(pca_data_AHC)]]
-
-##
 
 plot(pca_data_AHC, 
      col = hc_clusters, 
