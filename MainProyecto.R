@@ -1057,6 +1057,7 @@ km.out_1 <- kmeans(pca_coords1,
                    nstart = 10 # how many initial conditions are created
 ) 
 
+#We plot the results so we can see visually how countries are grouped 
 par(mfrow = c(1, 1))
 plot(pca_coords1, col = (km.out_1$cluster + 1), 
      main = paste("K-Means Clustering Results with K = ", k, sep = " "),
@@ -1069,6 +1070,7 @@ text(pca_coords1,
 
 pca_data$cluster <- as.factor(km.out_1$cluster)
 
+#We calculate the mean of each variable for each cluster
 pca_data %>%
   group_by(cluster) %>%
   summarise(across(where(is.numeric), mean))
@@ -1078,6 +1080,8 @@ data_long <- pca_data %>%
 
 cluster_colors <- scico(4, palette = "lajolla")
 
+#To see more clearly how variables are distributed 
+#and what is their dispersion in each cluster, we make the violin plot
 ggplot(data_long, aes(x = cluster, y = value, fill = cluster)) +
   geom_violin(trim = FALSE, alpha = 0.75) +
   facet_wrap(~variable, scales = "free", ncol = 4) +
